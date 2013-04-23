@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://www.irubi.com
+title: irubi.com
+subtitle: Stay hungry . Stay foolish
+author: 李骥平
 simple_search: http://google.com/search
 description:
 
@@ -33,7 +33,13 @@ destination: public
 plugins: plugins
 code_dir: downloads/code
 category_dir: blog/categories
-markdown: rdiscount
+# markdown: rdiscount
+markdown: kramdown
+# kramdown:
+#   use_coderay: true
+#   coderay:
+#     coderay_line_numbers: table
+#     coderay_css: class
 pygments: false # default python pygments have been replaced by pygments.rb
 
 paginate: 10          # Posts per page on the blog index
@@ -49,7 +55,7 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
-# blog_index_asides:
+blog_index_asides: [custom/asides/recent_comments.html]
 # post_asides:
 # page_asides:
 
@@ -65,7 +71,7 @@ github_skip_forks: true
 
 # Twitter
 twitter_user:
-twitter_tweet_button: true
+twitter_tweet_button: false
 
 # Google +1
 google_plus_one: false
@@ -85,7 +91,7 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
+disqus_short_name: 
 disqus_show_comment_count: false
 
 # Google Analytics
@@ -93,3 +99,12 @@ google_analytics_tracking_id:
 
 # Facebook Like
 facebook_like: false
+#duoshuo comments
+duoshuo_comments: true
+duoshuo_short_name: irubi
+duoshuo_asides_num: 10      # 侧边栏评论显示条目数
+duoshuo_asides_avatars: 0   # 侧边栏评论是否显示头像
+duoshuo_asides_time: 0      # 侧边栏评论是否显示时间
+duoshuo_asides_title: 0     # 侧边栏评论是否显示标题
+duoshuo_asides_admin: 0     # 侧边栏评论是否显示作者评论
+duoshuo_asides_length: 18   # 侧边栏评论截取的长度

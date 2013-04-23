@@ -1,5 +1,6 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+@import "custom/coderay";
 
 @font-face {
   font-family: "League";
@@ -140,7 +141,6 @@ body > footer{
 @media only screen and (min-width: 550px) {
 
   body > header h1{
-      background: url("/favicon.png") no-repeat 0 8px;
       padding-left: 60px;
   }
 
@@ -184,4 +184,3 @@ body > footer{
       border-radius: 6px;
   }
 }
-

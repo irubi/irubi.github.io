@@ -1,29 +1,61 @@
 ---
 layout: default
 ---
-
+<html xmlns:wb="http://open.weibo.com/wb">
+<script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
 <div class="blog-index">
   {% assign index = true %}
-  {% for post in paginator.posts %}
-  {% assign content = post.content %}
-    <article>
-      {% include article.html %}
-    </article>
-  {% endfor %}
-  <div class="pagination">
-    {% if paginator.next_page %}
-      <a class="prev" href="{{paginator.next_page}}">&larr; Older</a>
-    {% endif %}
-    <a href="/blog/archives">Blog Archives</a>
-    {% if paginator.previous_page %}
-    <a class="next" href="{{paginator.previous_page}}">Newer &rarr;</a>
-    {% endif %}
-  </div>
+<article role="article">
+
+<img src="/images/posts/me.png" width="142" height="209" class="left">
+<div>
+  <h4>李骥平，2010年毕业于太原理工大学，计算机软件专业，硕士研究生.</h4>
+
+  <p>日常使用语言 &amp; 工具：</p>
+
+  <ul>
+    <li>Git, Ruby, Rails, HTML5</li>
+    <li>Mobile Develop Tools( Titanium, Sencha, JQM)</li>
+    <li>Javascript, Jquery, HTML, CSS</li>
+    <li>Mysql, mongoid, WebService, Linux(ubuntu, centOS…)</li>
+    <li>独立web项目开发及部署</li>
+    <li>认证数据库工程师</li>
+  </ul>
+  <p><a href="/downloads/resume.pdf">【查看/下载】 我的简历</a></p>
+  <h1>项目经验</h1>
+  <p class="marketing-byline">web 开发工具: <a target="_blank" href="http://rubyonrails.org/">Ruby on Rails</a>, 手机客户端开发工具: <a target="_blank" href="http://www.appcelerator.com/">Titanium.</a></p>
+
+  
+    <table>
+      <tr>
+        <td><a class="thumbnail" href="http://shop.nipponpaint.com.cn/" target="_blank" style="text-decoration: none">
+          <img src="/images/index/nipponpaint.png" alt="立邦官方商城" width="260" height="216">
+        </a></td>
+        <td><a href="http://www.demohour.com/" target="_blank" style="text-decoration: none">
+          <img src="/images/index/demohour.png" alt="点名时间" width="260" height="216">
+        </a></td>
+        <td><a class="thumbnail" href="#" style="text-decoration: none">
+          <img src="/images/index/edm.png" alt="EDM邮件管理系统" width="260" height="216">
+        </a></td>
+      </tr>
+
+      <tr>
+        <td><a class="thumbnail" href="#" style="text-decoration: none">
+          <img src="/images/index/sns.png" alt="SNS管理系统" width="260" height="216">
+        </a></td>
+        <td><a class="thumbnail" href="#" target="_blank" style="text-decoration: none">
+          <img src="/images/index/app.png" alt="点名时间手机客户端" width="260" height="216">
+        </a></td>
+      </tr>
+    </table>
+    <div class="clear"></div>
+
+</article>
 </div>
 <aside class="sidebar">
-  {% if site.blog_index_asides.size %}
-    {% include_array blog_index_asides %}
-  {% else %}
-    {% include_array default_asides %}
-  {% endif %}
+  <h3>联系方式：</h3>  
+  <p>Email: <code>elite.ljp@gmail.com</code></p>
+  <p>QQ: <code>22892496</code></p>
+  <p>Skype: <code>elite.ljp</code></p>
+  <p>weibo: <wb:follow-button uid="1677556635" type="red_3" width="100%" height="24" ></wb:follow-button></p>
 </aside>
