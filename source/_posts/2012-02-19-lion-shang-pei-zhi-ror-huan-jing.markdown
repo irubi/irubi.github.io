@@ -19,7 +19,7 @@ ZSH_THEME="robbyrussell"
 
   打开totalterminal preference， 设置homebrew 为default theme, 然后修改其配置选项如图：
 
-  <img src='/images/totalterminal_preference.png'>
+  <img src='http://pic.yupoo.com/irubi_v/CRLEVIMb/Bask3.png'>
 
 * 安装、配置 [git](http://help.github.com/mac-set-up-git/)
 

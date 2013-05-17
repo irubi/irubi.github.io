@@ -11,7 +11,7 @@ categories: mac
 这个问题解决思路是将一段代码`copy as rtf`，如果你去搜索的话，可以很快得到两种解决方案。
 下面是在`sublime IDE`上实现的，首先`cmd +shift +p`输入`install`选择`install package`，在建立完索引之后输入`highlight`,这是一个`sublime`的`package`，安装。这个package是通过Pygments来实现将代码语法进行高亮显示转化的。
 
-{% img center /images/posts/highlight.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLGlbvs/LzVJ2.png %}
 
 安装好之后可以在`Preferences > Package Settings > SublimeHighlight > Settings - User`文件里定义`Pygments`的主题:
 {% codeblock lang:yaml %}
@@ -64,7 +64,7 @@ categories: mac
 
 效果如下：
 
-{% img center /images/posts/keynote_syntax_highlight.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLFvm4m/10eBK3.png %}
 
 然后可以通过调整字体的大小来做进一步的美化工作。
 

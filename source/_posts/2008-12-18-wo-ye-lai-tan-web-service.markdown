@@ -32,7 +32,7 @@ categories: web service
  
 ### web service的逻辑分层 ###
 
-{% img center /images/posts/webservice1.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLGm386/UB4cY.png %}
 
 从图中可以看到，`web service`分为了5层，分别是数据层、数据访问层、业务逻辑层、业务面和监听者，它们的功能在左边有相应的说明。
  
@@ -84,7 +84,7 @@ Web 协议作为组件接口和协同描述的规范,完全屏蔽了不同软件
 这些特点比较明显，就不再进行讲述了。
  
 ### web服务的模型：
-{% img center /images/posts/webservice2.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLFw6Qm/f3rt5.png %}
 
 可以看到这里有3个角色，3个动作，3个双向箭头，首先解释一下3个角色
  
@@ -93,13 +93,13 @@ Web 协议作为组件接口和协同描述的规范,完全屏蔽了不同软件
  
 ### web服务开发的生命周期
 
-{% img center /images/posts/webservice3.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLGltRx/HAuBi.png %}
 
 这个生命周期类似于软件开发的生命周期， 因为web开发也是一种软件开发的过程。
 
 ### web服务概念性协议栈
  
-{% img center /images/posts/webservice4.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLGlsXc/4I5k9.png %}
 
 * 发现服务层：是帮助客户端应用解析远程服务的位置，通过UDDI实现。
 * 描述服务层：为客户端提供服务端的服务描述，例如web服务能做什么，位置在哪，如何调用等

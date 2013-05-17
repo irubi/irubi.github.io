@@ -32,7 +32,7 @@ folder > st .
    
    * shortcut:
    
-<img src='/images/stshortcut.png'>
+<img src='http://pic.yupoo.com/irubi_v/CRLEVIMb/Bask3.png'>
 上面的几个方式可以组合使用，基本是2合1居多，譬如要跳转到home_contrller的index方法，可以用cmd t输入homectr@index
     
   * 多重选择

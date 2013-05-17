@@ -21,7 +21,7 @@ rails框架实现AB测试
 
 举例来说，对于电商网站的某个产品介绍页面，该页面直接关系到订单提交（也即购买）的核心业务逻辑，现在进行A/B测试，呈现给用户不同的view，然后根据用户提交订单数量及用户打开该页面次数进行记录得到测试数据，进而判断哪个view是最好的。
 
-{% img center /images/ab-testing.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLEK4ml/NHO5l.png %}
 
 
 3.A/B测试的手段
@@ -128,7 +128,7 @@ end
 {% endcodeblock %}
 
 此时打开/split可以看到结果如下图：
-{% img center /images/111.png %}
+{% img center http://pic.yupoo.com/irubi_v/CRLEK4ml/NHO5l.png %}
 
 可以根据split的统计数据进行判断和决策。
 
