@@ -8,4 +8,4 @@ categories: mac
 
 看图就明白：
 
-{% img center /images/find_wifi_sec.png %}
+{% img center http://pic.yupoo.com/irubi_v/DrmWnFTj/NbK6k.png %}
