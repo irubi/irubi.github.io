@@ -9,7 +9,7 @@ categories: mac software
 <!--more-->
 因为我大部分时间是做rails web开发的，可能相关的工具会多一些。首先推荐几个国内不错的关于这方面的资源：
 
-{% img http://pic.yupoo.com/irubi_v/CRLEVIMb/Bask3.png %}
+{% img http://pic.yupoo.com/irubi_v/CRLEMM0u/IP6t6.png %}
 
 按顺序来讲：
 

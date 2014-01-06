@@ -92,3 +92,23 @@ self.index_options   = {
   :charset_dictpath => "/usr/local/mmseg/etc"
 }
 {% endcodeblock %}
+
+
+####Ubuntu环境下：
+
+{% codeblock lang:bash %}
+apt-get install make gcc g++ automake libtool mysql-client libmysqlclient15-dev   libxml2-dev libexpat1-dev
+{% endcodeblock %}
+
+下载最新版
+{% codeblock lang:bash %}
+cd ~
+wget http://www.wapm.cn/uploads/csft/4.0/coreseek-4.1-beta.tar.gz
+{% endcodeblock %}
+解压
+{% codeblock lang:bash %}
+tar -zxvf coreseek-4.1-beta.tar.gz
+{% endcodeblock %}
+
+安装
+
