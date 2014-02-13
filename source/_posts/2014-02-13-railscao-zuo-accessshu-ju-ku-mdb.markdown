@@ -59,13 +59,6 @@ linux服务器 Rails程序：
     def send_msg
       host = '192.192.100.11'
       user = 'root'
-      # msg = self.content.force_encoding("utf-8")
-      # phone = self.contact
-      
-        
-      # msg = self.content.force_encoding('ASCII-8BIT')
-      # phone = self.contact
-      # sent_at = self.sent_at.strftime("%Y/%m/%d %H:%M:%S")
       sms_json_url = ''
       if Rails.env == 'development'
         sms_json_url = 'http://192.192.102.97:3000' + Rails.application.routes.url_helpers.admin_sms_path(self) + '.json'
