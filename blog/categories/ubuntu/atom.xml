@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ubuntu | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2014-07-16T19:32:42+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ubuntu服务器上通过cron定时备份rails应用的数据库]]></title>
+    <link href="http://irubi.github.io/blog/2011/11/22/ubuntufu-wu-qi-shang-tong-guo-cronding-shi-bei-fen-railsying-yong-de-shu-ju-ku/"/>
+    <updated>2011-11-22T12:26:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2011/11/22/ubuntufu-wu-qi-shang-tong-guo-cronding-shi-bei-fen-railsying-yong-de-shu-ju-ku</id>
+    <content type="html"><![CDATA[<h2 id="section">方案描述：</h2>
+
+<p>用cron每天凌晨2：00自动备份MySQL数据库，文件名以数据库名为前缀紧跟当天的年月日命名（例如project_production2011-12-27.sql），备份后自动删除前六天的备份
+<!--more-->
+####示例</p>
+
+<p>1.ssh登陆远程服务器
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh username@host_address
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+2.建立目录
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>username@hostname:~<span class="nv">$ </span>mkdir dbbak
+</span><span class='line'>username@hostname:~<span class="nv">$ </span>mkdir dbbak/project_db
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+3.编辑命令文本
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>username@hostname:~/dbbak<span class="nv">$ </span>nano dbbak.sh
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+内容：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">DBbinPath</span><span class="o">=</span>/usr/bin/
+</span><span class='line'><span class="nv">DBName</span><span class="o">=</span>project_production
+</span><span class='line'><span class="nv">BackupPath</span><span class="o">=</span>/home/username/dbbak/project_db&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;mysqldump –user<span class="o">=</span>”db_username” –password<span class="o">=</span>”db_password” <span class="k">${</span><span class="nv">DBName</span><span class="k">}</span> &amp;gt; <span class="k">${</span><span class="nv">BackupPath</span><span class="k">}</span>”/”<span class="k">${</span><span class="nv">DBName</span><span class="k">}</span>&lt;code&gt;date <span class="s2">&quot;+%Y-%m-%d&quot;</span>&lt;/code&gt;“.sql” ;
+</span><span class='line'>find <span class="k">${</span><span class="nv">BackupPath</span><span class="k">}</span>”/” -mtime +6 -exec rm <span class="o">{}</span> <span class="se">\;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>4.执行测试一下
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  &lt;br /&gt;
+</span><span class='line'>sudo sh dbbak.sh
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+5.在root下添加cron
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh root@hostname
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+6.编辑cron任务
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>root@hostname:~<span class="nv">$ </span>crontab -e
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+内容：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>0 2 * * * &lt;code&gt;sh /home/username/dbbak/dbbak.sh&lt;/code&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+</feed>

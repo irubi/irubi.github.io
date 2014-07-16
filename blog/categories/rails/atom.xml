@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: rails | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/rails/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2014-07-16T19:32:42+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails操作Access数据库(mdb)]]></title>
+    <link href="http://irubi.github.io/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/"/>
+    <updated>2014-02-13T15:25:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb</id>
+    <content type="html"><![CDATA[<p>应用场景：</p>
+
+<ul>
+  <li>
+    <p><code>windows</code>上跑着一个短信猫的服务，这个程序二次开发是通过修改服务所使用的一个<code>access</code>数据库，插入记录即可实现发短信的功能。</p>
+  </li>
+  <li>
+    <p><code>linux上</code>是<code>Rails</code>程序，开发了一个通讯录和发短信的功能，发短信时需要在<code>create</code>短信之后触发修改<code>access</code>数据库的操作。</p>
+  </li>
+</ul>
+
+<p>但是<code>Rails</code>连接<code>windows</code>下的<code>access</code>(mdb数据库)比较麻烦，需要调用<code>mdb-tools</code>之类的东西，而且对中文支持可能会出现问题。</p>
+
+<p>所以思路是这样的，在<code>windows</code>上安装<code>ssh server</code>，用<code>freesshd.exe</code>(开源免费)。安装好之后建立一个<code>ssh</code>用户(如root),并且将<code>linux</code>服务器上的<code>ssh\id_rsa.pub</code>内容复制到<code>c:/freesshd/root</code>文件中，如果还要加入其他ssh（root）用户，也可以将<code>id_rsa.pub</code>内容复制进去。</p>
+
+<p>建立<code>ssh</code>通道之后，就可以用<code>ruby</code>执行<code>ssh</code>远程命令来操纵<code>windows</code>来执行命令操作<code>access</code>数据库。在<code>windows</code>上建立脚本如下：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>insertsms.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>  <span class="c1"># encoding: utf-8</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">rubygems</span><span class="err">’</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">sequel</span><span class="err">’</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">“</span><span class="n">net</span><span class="o">/</span><span class="n">http</span><span class="err">”</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">“</span><span class="n">uri</span><span class="err">”</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">json</span><span class="err">’</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;uri = URI.parse(ARGV[0])</span>
+</span><span class='line'><span class="sr">  response = JSON.parse(Net::HTTP.get_response(uri).body)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="nb">puts</span> <span class="n">uri</span>
+</span><span class='line'>  <span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="o">.</span><span class="n">ado</span><span class="p">(</span><span class="ss">:conn_string</span><span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span><span class="err">’</span><span class="no">Provider</span><span class="o">=</span><span class="no">Microsoft</span><span class="o">.</span><span class="n">Jet</span><span class="o">.</span><span class="n">OLEDB</span><span class="o">.</span><span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span><span class="no">Data</span> <span class="no">Source</span><span class="o">=</span><span class="ss">D</span><span class="p">:\</span><span class="n">website</span><span class="p">\</span><span class="n">db</span><span class="p">\</span><span class="n">smsdata</span><span class="o">.</span><span class="n">mdb</span><span class="err">’</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">items</span> <span class="o">=</span> <span class="no">DB</span><span class="o">[</span><span class="ss">:OutBox</span><span class="o">]</span> <span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;phones = response[“phones”].split(‘,’)</span>
+</span><span class='line'><span class="sr">  msg = response[“msg”].dup.force_encoding(“utf-8”)</span>
+</span><span class='line'><span class="sr">  sent_at = response[“sent_at”]&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">phones</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span><span class="o">|</span><span class="n">phone</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="ss">:Mbno</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">phone</span><span class="p">,</span> <span class="ss">:Msg</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">:SendTime</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">sent_at</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>linux服务器 Rails程序：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>model/sms.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">rubygems</span><span class="err">’</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">net</span><span class="o">/</span><span class="n">ssh</span><span class="err">’</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;class Sms &amp;lt; ActiveRecord::Base&lt;br /</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+</span><span class='line'>      <span class="p">{</span> <span class="ss">:id</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">:phones</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">contact</span><span class="p">,</span> <span class="ss">:msg</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="ss">:sent_at</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">sent_at</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">Y</span><span class="o">/%</span><span class="n">m</span><span class="o">/%</span><span class="n">d</span> <span class="o">%</span><span class="ss">H</span><span class="p">:</span><span class="o">%</span><span class="ss">M</span><span class="p">:</span><span class="o">%</span><span class="n">S</span><span class="err">”</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;def send_msg</span>
+</span><span class='line'><span class="sr">  host = &#39;192.192.100.11&#39;</span>
+</span><span class='line'><span class="sr">  user = &#39;root&#39;</span>
+</span><span class='line'><span class="sr">  sms_json_url = &#39;&#39;</span>
+</span><span class='line'><span class="sr">  if Rails.env == &#39;development&#39;</span>
+</span><span class='line'><span class="sr">    sms_json_url = &#39;http:/</span><span class="o">/</span><span class="mi">192</span><span class="o">.</span><span class="mi">192</span><span class="o">.</span><span class="mi">102</span><span class="o">.</span><span class="mi">97</span><span class="p">:</span><span class="mi">3000</span><span class="s1">&#39; + Rails.application.routes.url_helpers.admin_sms_path(self) + &#39;</span><span class="o">.</span><span class="n">json</span><span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">  elsif Rails.env == &#39;</span><span class="n">production</span><span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">    sms_json_url = &#39;</span><span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="mi">192</span><span class="o">.</span><span class="mi">192</span><span class="o">.</span><span class="mi">100</span><span class="o">.</span><span class="mi">22</span><span class="s1">&#39; + Rails.application.routes.url_helpers.admin_sms_path(self) + &#39;</span><span class="o">.</span><span class="n">json</span><span class="err">&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="ss">Net</span><span class="p">:</span><span class="ss">:SSH</span><span class="o">.</span><span class="n">start</span><span class="p">(</span> <span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="k">do</span><span class="o">|</span><span class="n">ssh</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ssh</span><span class="o">.</span><span class="n">exec!</span><span class="p">(</span><span class="s2">&quot;cmd /c c:/ruby200/bin/ruby d:/website/insertsms.rb </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">sms_json_url</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>   <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</code></pre>
+
+<p>因为如果从<code>Rails</code>调用<code>windows</code>上的<code>insertsms.rb</code>这段<code>script</code>如果传中文参数时，会有乱码问题出现，所以将插入短信所需数据参数以<code>json</code>的方式提供，直接让<code>insertsms.rb</code>去读取，将数据处理之后插入<code>access</code>数据库即可。</p>
+
+<p>通信过程可能会耗费时间，造成响应时间长，所以需要引入<code>delay_job</code>来提升用户体验。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[中文分词检索sphinx]]></title>
+    <link href="http://irubi.github.io/blog/2012/04/20/zhong-wen-fen-ci-jian-suo-sphinx/"/>
+    <updated>2012-04-20T11:20:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2012/04/20/zhong-wen-fen-ci-jian-suo-sphinx</id>
+    <content type="html"><![CDATA[<p>讲述如何在Rails服务器上搭建中文搜索服务。
+<!--more-->
+中文版sphinx -&gt; coreseek</p>
+
+<p><a href="http://www.coreseek.cn/docs/coreseek_4.1-sphinx_2.0.1-beta.html">官方文档</a></p>
+
+<p>coreseek简单说就是支持中文分词的sphinx，所以选定最新beta版进行安装。</p>
+
+<p>1.在centos 6.0上安装sphinx服务</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo yum -y install yum glibc-common build-essential libtool autoconf automake libexpat-dev
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>下载 coreseek最新版， http://www.coreseek.cn/news/14/52/
+解压之后</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd </span>mmseg-3.x.x
+</span><span class='line'>aclocal
+</span><span class='line'>libtoolize –force
+</span><span class='line'>automake –add-missing
+</span><span class='line'>autoconf
+</span><span class='line'>autoheader
+</span><span class='line'>make clean <span class="c">#此时如有错误可忽略不管</span>
+</span><span class='line'>./configure –prefix<span class="o">=</span>/usr/local/mmseg3
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'>cp -f src/&lt;em&gt;/&lt;/em&gt;.h /usr/local/mmseg3/include/mmseg/
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>一定要执行以上的拷贝，否则make编译时会出错。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo ln -s /usr/local/mmseg/bin/mmseg /usr/bin&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># sh buildconf.sh &lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># export LIBS=”-ldl -lutil -Xlinker -export-dynamic”&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># ./configure –prefix=/usr/local/coreseek –without-python –without-unixodbc –with-mysql –with-mmseg –with-mmseg-includes=/usr/local/mmseg/include/mmseg/ –with-mmseg-libs=/usr/local/mmseg/lib/&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># make &amp;amp;&amp;amp; make install&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span>yum install mysql-devel libxml2-devel expat-devel&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span><span class="nb">cd </span>csft-3.2.14&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span>make clean&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span>./configure -prefix<span class="o">=</span>/usr/local/coreseek  –without-unixodbc –with-mmseg –with-mmseg-includes<span class="o">=</span>/usr/local/mmseg/include/mmseg/ –with-mmseg-libs<span class="o">=</span>/usr/local/mmseg/lib/ –with-mysql
+</span><span class='line'><span class="nv">$ </span>make &amp;amp;&amp;amp; make install
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>需要将coreseek的命令加入path中，</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vi ~/.bash_profile
+</span><span class='line'><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HOME</span>/bin:/usr/local/coreseek/bin/
+</span><span class='line'><span class="nb">source</span> ~/.bash_profile
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem install thinking-sphinx
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Hack Thinking-Sphinx:</p>
+
+<p>首先查看一下gem的安装路径
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem environment
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>修改thinking-sphix-gem:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vi <span class="nv">$thinking</span>-sphinx-gem-path/lib/thinking_sphinx/configuration.rb
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>self.index_options   <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  :charset_type <span class="o">=</span>&amp;gt; “zh_cn.utf-8”,
+</span><span class='line'>  :charset_dictpath <span class="o">=</span>&amp;gt; “/usr/local/mmseg/etc”
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4 id="ubuntu">Ubuntu环境下：</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>apt-get install make gcc g++ automake libtool mysql-client libmysqlclient15-dev   libxml2-dev libexpat1-dev
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>下载最新版
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~
+</span><span class='line'>wget http://www.wapm.cn/uploads/csft/4.0/coreseek-4.1-beta.tar.gz
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+解压
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>tar -zxvf coreseek-4.1-beta.tar.gz
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>安装</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Lion 上配置 ROR 环境]]></title>
+    <link href="http://irubi.github.io/blog/2012/02/19/lion-shang-pei-zhi-ror-huan-jing/"/>
+    <updated>2012-02-19T11:52:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2012/02/19/lion-shang-pei-zhi-ror-huan-jing</id>
+    <content type="html"><![CDATA[<!--more-->
+
+<ul>
+  <li>
+    <p>安装<a href="http://totalterminal.binaryage.com">total terminal</a>和<a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a>
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mate ~/.zshrc
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+    <p>修改theme参数：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">ZSH_THEME</span><span class="o">=</span>”robbyrussell”
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+    <p>打开totalterminal preference， 设置homebrew 为default theme, 然后修改其配置选项如图：</p>
+
+    <p><img src="http://pic.yupoo.com/irubi_v/CRLEVIMb/Bask3.png" /></p>
+  </li>
+  <li>
+    <p>安装、配置 <a href="http://help.github.com/mac-set-up-git/">git</a></p>
+  </li>
+  <li>
+    <p>安装<a href="https://github.com/mxcl/homebrew">homebrew</a></p>
+  </li>
+  <li>
+    <p>安装 <a href="http://beginrescueend.com/rvm/install/">rvm</a></p>
+  </li>
+</ul>
+
+<p>然后执行</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">source</span> ~/.zshrc
+</span><span class='line'><span class="nb">type </span>rvm | head -1
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>rvm 安装成功</p>
+
+<p>如果在下面的安装过程中出现错误，请确保已经安装了xcode command line tools。</p>
+
+<ul>
+  <li>
+    <p>安装ruby</p>
+
+    <p>可以先看一下
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rvm list known
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+安装1.9.3</p>
+  </li>
+</ul>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rvm install 1.9.3
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+安装完成之后
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rvm use 1.9.3 –default
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>看看irb是否支持中文, 如果不支持，在~/.zshrc中加入</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>en_US.UTF-8
+</span><span class='line'><span class="nb">export </span><span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>安装完成</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[获取GA数据并绘制chart]]></title>
+    <link href="http://irubi.github.io/blog/2012/02/13/huo-qu-gashu-ju-bing-hui-zhi-chart/"/>
+    <updated>2012-02-13T12:00:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2012/02/13/huo-qu-gashu-ju-bing-hui-zhi-chart</id>
+    <content type="html"><![CDATA[<p>使用garb来获取GA上面的网站分析数据，再通过获取的数据用highcharts来绘制曲线
+<!--more--></p>
+
+<p><a href="https://github.com/vigetlabs/garb">garb</a>是一个用来调用Google Analytics API的Ruby gem.
+首先需要在rails中新建一个script：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>script/ga.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;p “—-loGin Google—-“</span>
+</span><span class='line'><span class="sr">Garb::Session.login(‘google account’, ‘password’)</span>
+</span><span class='line'><span class="sr">p “—-Get Profile—-“</span>
+</span><span class='line'><span class="sr">profile = Garb::Profile.first(“UA-XXXXXXX-X”)</span>
+</span><span class='line'><span class="sr">p profile</span>
+</span><span class='line'><span class="sr">p “—–Get unique PV—-“&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">start_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span> <span class="o">-</span> <span class="mi">30</span>
+</span><span class='line'><span class="n">end_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;p “—–Define a specific page—-“</span>
+</span><span class='line'><span class="sr">project_id = 123456&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="nb">p</span> <span class="err">“—–</span><span class="n">fetch</span> <span class="n">the</span> <span class="n">page</span> <span class="p">(</span><span class="ss">uri</span><span class="p">:</span> <span class="sr">/projects/</span><span class="mi">12345</span><span class="p">)</span> <span class="n">unique</span> <span class="n">pageview</span><span class="err">—</span><span class="o">-</span><span class="err">“</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;(start_date..end_date).each do |date|</span>
+</span><span class='line'><span class="sr">  result_set = Exits.results(profile, :start_date =&amp;gt; date, </span>
+</span><span class='line'><span class="sr">                              :end_date =&amp;gt; date, </span>
+</span><span class='line'><span class="sr">                              :filters =&amp;gt; {:page_path.eql =&amp;gt; ‘/</span><span class="n">projects</span><span class="o">/</span><span class="err">’</span> <span class="o">+</span> <span class="n">project_id</span><span class="o">.</span><span class="n">to_s</span><span class="p">})</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;result_set.each do |result|</span>
+</span><span class='line'><span class="sr">    #puts date.to_s + “-&amp;gt; “ + result.unique_pageviews.to_s</span>
+</span><span class='line'><span class="sr">    Pv.create(:ga_date =&amp;gt; date, </span>
+</span><span class='line'><span class="sr">              :upv =&amp;gt; result.unique_pageviews, </span>
+</span><span class='line'><span class="sr">              :pv =&amp;gt; result.pageviews,</span>
+</span><span class='line'><span class="sr">              :project_id =&amp;gt; project_id.to_s)</span>
+</span><span class='line'><span class="sr">  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>这里代码执行的前提是有一个存放pv数据的表和一个Exits的Model</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/models/exits.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Exits</span>
+</span><span class='line'>  <span class="kp">extend</span> <span class="ss">Garb</span><span class="p">:</span><span class="ss">:Model</span>
+</span><span class='line'>  <span class="n">metrics</span> <span class="ss">:pageviews</span><span class="p">,</span> <span class="ss">:unique_pageviews</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/models/pv.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># t.date :ga_date</span>
+</span><span class='line'><span class="c1"># t.integer :upv, :default =&amp;gt; 0</span>
+</span><span class='line'><span class="c1"># t.integer :pv, :default =&amp;gt; 0</span>
+</span><span class='line'><span class="c1"># t.integer :project_id</span>
+</span><span class='line'><span class="c1"># t.timestamps</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Pv</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>这样就可以将这个projects/123456页面的upv存放到数据库中了。不过这里的数据关系没有进行关联，仅作为一个demo来演示如何进行数据获取及chart绘制，所以具体应用可以根据实际情况进行设计。</p>
+
+<p>另外还需要说明的一点就是，这里是获取一个月之内的每日upv数据，可能存在该页面访问量为0的数据，这种数据不会存入数据库中，所以需要在绘图的时候进行判断处理。</p>
+
+<p>运行script/ga.rb的命令：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>script/rails runner script/ga_pv.rb
+</span><span class='line'>script/rails runner -e production script/test.rb
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+可以在部署之后将命令加入cron中，让它每日定时去抓取GA的数据。
+——–</p>
+
+<p>绘制chart:</p>
+
+<p>绘图使用<a href="http://www.highcharts.com/">highchart</a>, 下载highchats的js包，并放到app/assets/javascripts/目录下。</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/views/demo/chart.html.erb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="ni">&amp;lt;</span>% content_for :head do %<span class="ni">&amp;gt;</span>
+</span><span class='line'>  <span class="ni">&amp;lt;</span>%= javascript_include_tag “highcharts” %<span class="ni">&amp;gt;</span><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span><span class="ni">&amp;lt;</span>% end %<span class="ni">&amp;gt;</span>
+</span><span class='line'><span class="nt">&lt;script&gt;</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">chart</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">Chart</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">chart</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">renderTo</span><span class="o">:</span> <span class="s2">&quot;project_upv_chart&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;spline&#39;</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;每日不重复访客数&quot;</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">xAxis</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span>
+</span><span class='line'>                <span class="nx">labels</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">formatter</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="k">return</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">dateFormat</span><span class="p">(</span><span class="s1">&#39;%b月%e日&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+</span><span class='line'>                   <span class="p">}</span>
+</span><span class='line'>               <span class="p">}</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">yAxis</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>              <span class="nx">allowDecimals</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>              <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;访问数&quot;</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">tooltip</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">formatter</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">dateFormat</span><span class="p">(</span><span class="s2">&quot;%Y年%b月%e日 %A&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span> <span class="o">+</span> <span class="s1">&#39;唯一身份浏览量： &#39;</span> <span class="o">+</span>
+</span><span class='line'>                <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">numberFormat</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">series</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>              <span class="nx">pointInterval</span><span class="o">:</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">%=</span> <span class="mi">1</span><span class="p">.</span><span class="nx">day</span><span class="p">.</span><span class="nx">to_i</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">%&amp;</span><span class="nx">gt</span><span class="p">;,</span>
+</span><span class='line'>              <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">%</span> <span class="nx">start_date</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Time</span><span class="p">.</span><span class="nx">now</span> <span class="o">-</span> <span class="mi">30</span><span class="p">.</span><span class="nx">days</span><span class="p">)</span> <span class="o">%&amp;</span><span class="nx">gt</span><span class="p">;</span>
+</span><span class='line'>              <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">%</span> <span class="nx">end_date</span> <span class="o">=</span> <span class="nx">Time</span><span class="p">.</span><span class="nx">now</span> <span class="o">%&amp;</span><span class="nx">gt</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">pointStart</span><span class="o">:</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">%=</span> <span class="nx">start_date</span><span class="p">.</span><span class="nx">to_i</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">%&amp;</span><span class="nx">gt</span><span class="p">;,</span>
+</span><span class='line'>              <span class="nx">data</span><span class="o">:</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="o">%=</span> <span class="p">(</span><span class="nx">start_date</span><span class="p">.</span><span class="nx">to_date</span><span class="p">..</span><span class="nx">end_date</span><span class="p">.</span><span class="nx">to_date</span><span class="p">).</span><span class="nx">map</span> <span class="p">{</span><span class="o">|</span><span class="nx">date</span><span class="o">|</span> <span class="nx">Pv</span><span class="p">.</span><span class="nx">find_by_ga_date</span><span class="p">(</span><span class="nx">date</span><span class="p">).</span><span class="nx">nil</span><span class="o">?</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">Pv</span><span class="p">.</span><span class="nx">find_by_ga_date</span><span class="p">(</span><span class="nx">date</span><span class="p">).</span><span class="nx">upv</span><span class="p">}.</span><span class="nx">inspect</span><span class="o">%&amp;</span><span class="nx">gt</span><span class="p">;</span>
+</span><span class='line'>          <span class="p">}]</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.highcharts-legend&quot;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'><span class="ni">&amp;lt;</span>div id=&quot;project_upv_chart&quot; style=&quot;width:560px; height:300px;&quot;<span class="ni">&amp;gt;&amp;lt;</span>/div<span class="ni">&amp;gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>在highcharts.js中修改几个需要汉化的地方，有月份，星期等。</p>
+
+<p>在上面的代码中，如果是单一的数据曲线，希望隐藏图表下面的series选择按钮，可以加入<code>$(".highcharts-legend").hide();</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[利用bundle创建、发布、删除gem]]></title>
+    <link href="http://irubi.github.io/blog/2012/02/09/li-yong-bundlechuang-jian-%2C-fa-bu-%2C-shan-chu-gem/"/>
+    <updated>2012-02-09T12:13:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2012/02/09/li-yong-bundlechuang-jian-,-fa-bu-,-shan-chu-gem</id>
+    <content type="html"><![CDATA[<p>使用bundle工具来做自己的gem，并且把gem发布！
+<!--more--></p>
+
+<p>首先需要系统的RubyGems 1.3.6+ and gemcutter 0.5.0+. </p>
+
+<p>如果版本不对或者没有安装可以执行：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem update –system
+</span><span class='line'>gem install gemcutter
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>创建和发布：
+参考<a href="http://railscasts.com/episodes/245-new-gem-with-bundler">railscasts</a>
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>bundle gem <span class="o">[</span>gemname<span class="o">]</span>
+</span><span class='line'>gem build <span class="o">[</span>gemname<span class="o">]</span>.gemspec
+</span><span class='line'>gem push <span class="o">[</span>gemname<span class="o">]</span>-<span class="o">[</span>version_number<span class="o">]</span>.gem
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>删除gem
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem yank <span class="o">[</span>gemname<span class="o">]</span> -v<span class="o">[</span>version_number<span class="o">]</span>
+</span><span class='line'>gem yank <span class="o">[</span>gemname<span class="o">]</span> -v<span class="o">[</span>version_number<span class="o">]</span> –undo
+</span><span class='line'>rake gemcutter:index:update
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+只能yank,但是不能阻止下载， 如果要彻底删除的话还得发一个dicussion 上去申请删除，要不然会影响到下载用户的使用。</p>
+
+]]></content>
+  </entry>
+  
+</feed>

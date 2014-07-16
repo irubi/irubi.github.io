@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: sublime | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/sublime/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2014-07-16T19:32:42+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[sublime IDE安装使用介绍]]></title>
+    <link href="http://irubi.github.io/blog/2012/03/10/sublime-idean-zhuang-shi-yong-jie-shao/"/>
+    <updated>2012-03-10T11:45:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2012/03/10/sublime-idean-zhuang-shi-yong-jie-shao</id>
+    <content type="html"><![CDATA[<p>偶尔看到sublime这样一款类textmate IDE还是蛮兴奋的，一直觉得一款好的IDE应该简单，易用。学习成本不高。用的爽，看着爽是非常重要的，作为一个每天面对代码的人来说，为了让眼球保持舒爽一款decent的IDE是必不可少的。</p>
+
+<p>而且sublime text2是一个跨平台的编辑器，光看截图就够诱惑的了。</p>
+
+<p>价格： USD $59, 不过未注册可以正常使用所有功能，只是会不时的在保存文件时提示购买。
+<!--more--></p>
+
+<ol>
+  <li><a href="http://www.sublimetext.com/">下载</a>安装，因为GTW的原因，需要翻墙下载。</li>
+  <li>
+    <p>在terminal中可以使用sublime text打开file或者folder进行编辑
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo ln -s /Applications/Sublime<span class="se">\ </span>Text<span class="se">\ </span>2.app/Contents/SharedSupport/bin/subl /usr/bin/st
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+  </li>
+  <li>
+    <p>以后就可以下面的命令来打开单个文件或者目录进行工作了。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>folder &amp;gt; st filename.txt
+</span><span class='line'>folder &amp;gt; st .
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+  </li>
+  <li>
+    <p>开始使用</p>
+
+    <ul>
+      <li>
+        <p>可以试试这个新的<a href="http://www.sublimetext.com/forum/download/file.php?id=200">icon</a>
+下载解压之后到/Applications/Sublime\ Text\ 2.app/Contents/Resources下替换原来的文件即可</p>
+      </li>
+      <li>
+        <p>shortcut:</p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<p><img src="http://pic.yupoo.com/irubi_v/CRLEVIMb/Bask3.png" />
+上面的几个方式可以组合使用，基本是2合1居多，譬如要跳转到home_contrller的index方法，可以用cmd t输入homectr@index</p>
+
+<ul>
+  <li>多重选择
+    <ul>
+      <li>按住cmd拖动鼠标选取，可以任意多重选取</li>
+      <li>按住alt可以纵向选取一个区块</li>
+      <li>cmd d可以将与已经选择的内容相同的内容加入选择，或者ctrl+cmd+G可以一次性将与已选内容相同的内容加入选择。        </li>
+    </ul>
+  </li>
+  <li>
+    <p>package control</p>
+
+    <p>类似于textmate的bundle，sublimetext也有一个叫做package control的东西.
+在sublimetext中打开console，ctrl `输入下面的命令：
+ <div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>import urllib2,os;pf<span class="o">=</span>’Package Control.sublime-package’;ipp<span class="o">=</span>sublime.installed_packages_path<span class="o">()</span>;os.makedirs<span class="o">(</span>ipp<span class="o">)</span> <span class="k">if </span>not os.path.exists<span class="o">(</span>ipp<span class="o">)</span> <span class="k">else </span>None;open<span class="o">(</span>os.path.join<span class="o">(</span>ipp,pf<span class="o">)</span>,’wb’<span class="o">)</span>.write<span class="o">(</span>urllib2.urlopen<span class="o">(</span>‘http://sublime.wbond.net/’+pf.replace<span class="o">(</span>‘ ‘,’%20’<span class="o">))</span>.read<span class="o">())</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+  </li>
+</ul>
+
+<p>执行，然后重启sublimetext，会在preterences -&gt; package settings中发现package control。</p>
+
+<ul>
+  <li>代码对齐
+  举例来说,有下面这样格式的代码：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="n">var</span> <span class="n">joe</span> <span class="o">=</span> <span class="err">‘</span><span class="n">joe</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="n">var</span> <span class="n">johnny</span> <span class="o">=</span> <span class="err">‘</span><span class="n">johnny</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'><span class="n">var</span> <span class="n">quaid</span> <span class="o">=</span> <span class="err">‘</span><span class="n">quaid</span><span class="err">’</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+看起来会很不爽，因为第一行没有对齐，等号也没对齐。</li>
+</ul>
+
+<p>下面需要安装一个自动对齐的package，用shift cmd p调出package control面板，输入install然后按回车，输入alignment进行安装，重启sublimetext然后选择之前的这段代码，按ctrl+cmd+a，第一次按会将第一行对齐，第二次会将等号对齐，第三次就不会有反应了。很棒的功能。</p>
+
+<ul>
+  <li>
+    <p>执行代码</p>
+
+    <p>编写完代码可以执行cmd d来执行代码。</p>
+  </li>
+  <li>
+    <p>无干扰模式</p>
+
+    <p>ctrl shift cmd f或者在view中选择Enter distraction free mode。
+可以在preferences -&gt; settings-more -&gt; distraction free -user中进行防干扰模式的设置：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="err">“line_numbers”:</span> <span class="err">false,</span>      <span class="err">//是否显示行号</span>
+</span><span class='line'>  <span class="err">“gutter”:</span> <span class="err">false,</span>            <span class="err">//是否显示边列</span>
+</span><span class='line'>  <span class="err">“draw_centered”:</span> <span class="err">true,</span>      <span class="err">//是否居中显示</span>
+</span><span class='line'>  <span class="err">“wrap_width”:</span> <span class="err">80,</span>           <span class="err">//换行宽度(单位：字符)</span>
+</span><span class='line'>  <span class="err">“word_wrap”:</span> <span class="err">true,</span>          <span class="err">//是否自动换行</span>
+</span><span class='line'>  <span class="err">“scroll_past_end”:</span> <span class="err">true</span>     <span class="err">//滚动能否超过结尾</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+  </li>
+  <li>
+    <p>TextMate Bundle</p>
+  </li>
+</ul>
+
+<p>只要将textmate的bundle直接拷贝到packages目录中就能用，包括textmate的色彩主题。</p>
+
+<ul>
+  <li>sublimetext主题和几个好用的插件
+看下面两张展示图:</li>
+</ul>
+
+<p><img src="http://buymeasoda.github.com/soda-theme/images/screenshots/soda-2-light-theme.png?v=4"></p>
+
+<p><img src="http://buymeasoda.github.com/soda-theme/images/screenshots/soda-2-dark-theme.png?v=2"></p>
+
+<ul>
+  <li>
+    <p>安装</p>
+
+    <p>打开<code>sublime text2 -&gt; preferences -&gt; broswer packages</code>, 在终端进入该目录， 将主题的内容放进去.
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git clone https://github.com/buymeasoda/soda-theme/ “Theme - Soda”
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+打开<code>Sublime Text 2 -&gt; Preferences -&gt; Settings - User</code>,
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">{</span>
+</span><span class='line'>  “theme”: “Soda Dark.sublime-theme”,
+</span><span class='line'>  “soda_classic_tabs”: <span class="nb">true</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+  </li>
+</ul>
+
+<p>如果在保存文件时发生错误，应该是语法问题，逗号没有写对之类的。</p>
+
+<p>Soda还有两个语法高亮颜色的配置方案，将<code>colour-schemes.zip</code>解压之后得到的两个<code>*.tmtheme</code>放到<code>'Packages/User'</code>目录下
+选择<code>Preferences-&gt; Color Scheme -&gt; User -&gt; **soda..</code></p>
+
+<h5 id="section">参考文章：</h5>
+
+<p><a href="https://github.com/neilsarkar/sublime_user_directory">快捷键和几个plugins</a></p>
+
+<p><a href="http://www.henriquebarroso.com/my-top-10sublime-2-plugins/">top 10 plugins</a></p>
+
+<p>打开10000行以上的代码文件也不会像textmate一样卡卡卡之后就crash，之前必须得用xcode来打开，编辑，然后保存。现在用sublimetext不会有这种情况了，打开很快不会卡。</p>
+
+<p>标签什么的有点chrome的感觉，很流畅，很舒服，也没有什么很华丽的让人目眩的东西。而且现在试用没有时间限制，只是在保存的时候会弹出一个让你购买的提示。</p>
+
+]]></content>
+  </entry>
+  
+</feed>

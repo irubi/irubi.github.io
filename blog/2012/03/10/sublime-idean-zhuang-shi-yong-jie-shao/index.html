@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>sublime IDE安装使用介绍 - adev.cn</title>
+  <meta name="author" content="李骥平">
+
+  
+  <meta name="description" content="偶尔看到sublime这样一款类textmate IDE还是蛮兴奋的，一直觉得一款好的IDE应该简单，易用。学习成本不高。用的爽，看着爽是非常重要的，作为一个每天面对代码的人来说，为了让眼球保持舒爽一款decent的IDE是必不可少的。 而且sublime text2是一个跨平台的编辑器， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://irubi.github.io/blog/2012/03/10/sublime-idean-zhuang-shi-yong-jie-shao/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="adev.cn" type="application/atom+xml">
+  <link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+  </script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+  
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40987303-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">adev.cn</a></h1>
+  
+    <h2>Stay hungry . Stay foolish</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:irubi.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Sublime IDE安装使用介绍</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-10T11:45:00+08:00" pubdate data-updated="true">Mar 10<span>th</span>, 2012</time>
+         
+        | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>偶尔看到sublime这样一款类textmate IDE还是蛮兴奋的，一直觉得一款好的IDE应该简单，易用。学习成本不高。用的爽，看着爽是非常重要的，作为一个每天面对代码的人来说，为了让眼球保持舒爽一款decent的IDE是必不可少的。</p>
+
+<p>而且sublime text2是一个跨平台的编辑器，光看截图就够诱惑的了。</p>
+
+<p>价格： USD $59, 不过未注册可以正常使用所有功能，只是会不时的在保存文件时提示购买。
+<!--more--></p>
+
+<ol>
+  <li><a href="http://www.sublimetext.com/">下载</a>安装，因为GTW的原因，需要翻墙下载。</li>
+  <li>在terminal中可以使用sublime text打开file或者folder进行编辑</li>
+</ol>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sudo ln -s /Applications/Sublime<span class="se">\ </span>Text<span class="se">\ </span>2.app/Contents/SharedSupport/bin/subl /usr/bin/st
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ol>
+  <li>以后就可以下面的命令来打开单个文件或者目录进行工作了。</li>
+</ol>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">folder &gt; st filename.txt
+</span><span class="line">folder &gt; st .
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ol>
+  <li>
+    <p>开始使用</p>
+
+    <ul>
+      <li>
+        <p>可以试试这个新的<a href="http://www.sublimetext.com/forum/download/file.php?id=200">icon</a>
+下载解压之后到/Applications/Sublime\ Text\ 2.app/Contents/Resources下替换原来的文件即可</p>
+      </li>
+      <li>
+        <p>shortcut:</p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<p><img src="http://pic.yupoo.com/irubi_v/CRLEVIMb/Bask3.png" />
+上面的几个方式可以组合使用，基本是2合1居多，譬如要跳转到home_contrller的index方法，可以用cmd t输入homectr@index</p>
+
+<ul>
+  <li>多重选择
+    <ul>
+      <li>按住cmd拖动鼠标选取，可以任意多重选取</li>
+      <li>按住alt可以纵向选取一个区块</li>
+      <li>cmd d可以将与已经选择的内容相同的内容加入选择，或者ctrl+cmd+G可以一次性将与已选内容相同的内容加入选择。        </li>
+    </ul>
+  </li>
+  <li>
+    <p>package control</p>
+
+    <p>类似于textmate的bundle，sublimetext也有一个叫做package control的东西.
+在sublimetext中打开console，ctrl `输入下面的命令：</p>
+  </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">import urllib2,os;pf<span class="o">=</span><span class="s1">&#39;Package Control.sublime-package&#39;</span>;<span class="nv">ipp</span><span class="o">=</span>sublime.installed_packages_path<span class="o">()</span>;os.makedirs<span class="o">(</span>ipp<span class="o">)</span> <span class="k">if </span>not os.path.exists<span class="o">(</span>ipp<span class="o">)</span> <span class="k">else </span>None;open<span class="o">(</span>os.path.join<span class="o">(</span>ipp,pf<span class="o">)</span>,<span class="s1">&#39;wb&#39;</span><span class="o">)</span>.write<span class="o">(</span>urllib2.urlopen<span class="o">(</span><span class="s1">&#39;http://sublime.wbond.net/&#39;</span>+pf.replace<span class="o">(</span><span class="s1">&#39; &#39;</span>,<span class="s1">&#39;%20&#39;</span><span class="o">))</span>.read<span class="o">())</span>
+</span><span class="line">	
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>执行，然后重启sublimetext，会在preterences -&gt; package settings中发现package control。</p>
+
+<ul>
+  <li>代码对齐
+  举例来说,有下面这样格式的代码：</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="c"><span class="line">  <span class="n">var</span> <span class="n">joe</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">joe</span><span class="err">&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="n">var</span> <span class="n">johnny</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">johnny</span><span class="err">&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="n">var</span> <span class="n">quaid</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">quaid</span><span class="err">&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>看起来会很不爽，因为第一行没有对齐，等号也没对齐。</p>
+
+<p>下面需要安装一个自动对齐的package，用shift cmd p调出package control面板，输入install然后按回车，输入alignment进行安装，重启sublimetext然后选择之前的这段代码，按ctrl+cmd+a，第一次按会将第一行对齐，第二次会将等号对齐，第三次就不会有反应了。很棒的功能。</p>
+
+<ul>
+  <li>
+    <p>执行代码</p>
+
+    <p>编写完代码可以执行cmd d来执行代码。</p>
+  </li>
+  <li>
+    <p>无干扰模式</p>
+
+    <p>ctrl shift cmd f或者在view中选择Enter distraction free mode。
+可以在preferences -&gt; settings-more -&gt; distraction free -user中进行防干扰模式的设置：</p>
+  </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;line_numbers&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>      <span class="err">//是否显示行号</span>
+</span><span class="line">    <span class="nt">&quot;gutter&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>            <span class="err">//是否显示边列</span>
+</span><span class="line">    <span class="nt">&quot;draw_centered&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>      <span class="err">//是否居中显示</span>
+</span><span class="line">    <span class="nt">&quot;wrap_width&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>           <span class="err">//换行宽度(单位：字符)</span>
+</span><span class="line">    <span class="nt">&quot;word_wrap&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>          <span class="err">//是否自动换行</span>
+</span><span class="line">    <span class="nt">&quot;scroll_past_end&quot;</span><span class="p">:</span> <span class="kc">true</span>     <span class="err">//滚动能否超过结尾</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>TextMate Bundle</li>
+</ul>
+
+<p>只要将textmate的bundle直接拷贝到packages目录中就能用，包括textmate的色彩主题。</p>
+
+<ul>
+  <li>sublimetext主题和几个好用的插件
+看下面两张展示图:</li>
+</ul>
+
+<p><img src="http://buymeasoda.github.com/soda-theme/images/screenshots/soda-2-light-theme.png?v=4" /></p>
+
+<p><img src="http://buymeasoda.github.com/soda-theme/images/screenshots/soda-2-dark-theme.png?v=2" /></p>
+
+<ul>
+  <li>
+    <p>安装</p>
+
+    <p>打开<code>sublime text2 -&gt; preferences -&gt; broswer packages</code>, 在终端进入该目录， 将主题的内容放进去.</p>
+  </li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">git clone https://github.com/buymeasoda/soda-theme/ <span class="s2">&quot;Theme - Soda&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>打开<code>Sublime Text 2 -&gt; Preferences -&gt; Settings - User</code>,</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="o">{</span>
+</span><span class="line">  <span class="s2">&quot;theme&quot;</span>: <span class="s2">&quot;Soda Dark.sublime-theme&quot;</span>,
+</span><span class="line">  <span class="s2">&quot;soda_classic_tabs&quot;</span>: <span class="nb">true</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果在保存文件时发生错误，应该是语法问题，逗号没有写对之类的。</p>
+
+<p>Soda还有两个语法高亮颜色的配置方案，将<code>colour-schemes.zip</code>解压之后得到的两个<code>*.tmtheme</code>放到<code>'Packages/User'</code>目录下
+选择<code>Preferences-&gt; Color Scheme -&gt; User -&gt; **soda..</code></p>
+
+<h5 id="section">参考文章：</h5>
+
+<p><a href="https://github.com/neilsarkar/sublime_user_directory">快捷键和几个plugins</a></p>
+
+<p><a href="http://www.henriquebarroso.com/my-top-10sublime-2-plugins/">top 10 plugins</a></p>
+
+<p>打开10000行以上的代码文件也不会像textmate一样卡卡卡之后就crash，之前必须得用xcode来打开，编辑，然后保存。现在用sublimetext不会有这种情况了，打开很快不会卡。</p>
+
+<p>标签什么的有点chrome的感觉，很流畅，很舒服，也没有什么很华丽的让人目眩的东西。而且现在试用没有时间限制，只是在保存的时候会弹出一个让你购买的提示。</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">李骥平</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-10T11:45:00+08:00" pubdate data-updated="true">Mar 10<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ide/'>IDE</a>, <a class='category' href='/blog/categories/sublime/'>sublime</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/02/19/lion-shang-pei-zhi-ror-huan-jing/" title="Previous Post: Lion 上配置 ROR 环境">&laquo; Lion 上配置 ROR 环境</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/04/20/zhong-wen-fen-ci-jian-suo-sphinx/" title="Next Post: 中文分词检索sphinx">中文分词检索sphinx &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"irubi"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/">Rails操作Access数据库(mdb)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/24/nei-wang-windows-serverbu-shu-railsying-yong/">内网windows server部署rails应用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/16/macshang-cha-zhao-yi-ji-yi-de-wifimi-ma/">mac上查找已记忆的wifi密码</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/16/insert-syntax-highlight-code-into-keynote/">Insert syntax highlight code into keynote</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/04/macshang-mian-ru-he-jie-jue-itunesluan-ma-de-wen-ti/">mac上面如何解决itunes乱码的问题</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 李骥平
+</p>
+
+</footer>
+  
+
+
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script>
+<!-- 
+ -->
+<!-- 
+ -->
+<!-- 
+ -->
+
+
+
+</body>
+</html>

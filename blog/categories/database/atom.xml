@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: database | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/database/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2014-07-16T19:32:42+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ubuntu服务器上通过cron定时备份rails应用的数据库]]></title>
+    <link href="http://irubi.github.io/blog/2011/11/22/ubuntufu-wu-qi-shang-tong-guo-cronding-shi-bei-fen-railsying-yong-de-shu-ju-ku/"/>
+    <updated>2011-11-22T12:26:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2011/11/22/ubuntufu-wu-qi-shang-tong-guo-cronding-shi-bei-fen-railsying-yong-de-shu-ju-ku</id>
+    <content type="html"><![CDATA[<h2 id="section">方案描述：</h2>
+
+<p>用cron每天凌晨2：00自动备份MySQL数据库，文件名以数据库名为前缀紧跟当天的年月日命名（例如project_production2011-12-27.sql），备份后自动删除前六天的备份
+<!--more-->
+####示例</p>
+
+<p>1.ssh登陆远程服务器
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh username@host_address
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+2.建立目录
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>username@hostname:~<span class="nv">$ </span>mkdir dbbak
+</span><span class='line'>username@hostname:~<span class="nv">$ </span>mkdir dbbak/project_db
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+3.编辑命令文本
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>username@hostname:~/dbbak<span class="nv">$ </span>nano dbbak.sh
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+内容：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">DBbinPath</span><span class="o">=</span>/usr/bin/
+</span><span class='line'><span class="nv">DBName</span><span class="o">=</span>project_production
+</span><span class='line'><span class="nv">BackupPath</span><span class="o">=</span>/home/username/dbbak/project_db&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;mysqldump –user<span class="o">=</span>”db_username” –password<span class="o">=</span>”db_password” <span class="k">${</span><span class="nv">DBName</span><span class="k">}</span> &amp;gt; <span class="k">${</span><span class="nv">BackupPath</span><span class="k">}</span>”/”<span class="k">${</span><span class="nv">DBName</span><span class="k">}</span>&lt;code&gt;date <span class="s2">&quot;+%Y-%m-%d&quot;</span>&lt;/code&gt;“.sql” ;
+</span><span class='line'>find <span class="k">${</span><span class="nv">BackupPath</span><span class="k">}</span>”/” -mtime +6 -exec rm <span class="o">{}</span> <span class="se">\;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>4.执行测试一下
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  &lt;br /&gt;
+</span><span class='line'>sudo sh dbbak.sh
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+5.在root下添加cron
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh root@hostname
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+6.编辑cron任务
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>root@hostname:~<span class="nv">$ </span>crontab -e
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+内容：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>0 2 * * * &lt;code&gt;sh /home/username/dbbak/dbbak.sh&lt;/code&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Cardinality在数据模型中的意思]]></title>
+    <link href="http://irubi.github.io/blog/2009/10/13/cardinalityzai-shu-ju-mo-xing-zhong-de-yi-si/"/>
+    <updated>2009-10-13T12:31:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2009/10/13/cardinalityzai-shu-ju-mo-xing-zhong-de-yi-si</id>
+    <content type="html"><![CDATA[<p>最近在翻译一本数据库的教材，碰到Cardinality这个词，这个词在许多国内的数据库教材中不常见。查了一下英文资料觉得很有必要翻一下，原文内容如下：</p>
+
+<blockquote>
+  <p>Cardinality defines the numeric relationships between occurrences of the entities on either end of the relationship line.</p>
+</blockquote>
+
+<!--more-->
+<p>下面是一些实例:</p>
+
+<ul>
+  <li>
+    <p><code>LINK</code> 这是0：0可选的关系，这样表达的意思就是：一个person可以占用一个停车位（parking space），但是没必要一个person有一个停车位，也没必要一个停车位必须有一个人。虽然这个概念很简单，但是在数据库中实现却并不直接。你可能得令一个实体作为主表，使用触发器或者程序来限制在另一张表里关联的记录数目。</p>
+  </li>
+  <li>
+    <p><code>SubType</code> 这是1：0的关系；只有一方有选择性。意思就是说一个人可能是一个程序员，那么一个程序员一定是一个人。关系中强制方必须作为主表。跟前面一样，用触发器和程序来控制数据库。</p>
+  </li>
+  <li>
+    <p><code>Physical Segment</code> 这是1：1的强制型关系。一个人必须有且仅有一个DNA序列，一个DNA序列也必须对应且仅对应一个人。 </p>
+  </li>
+  <li>
+    <p><code>Possession</code> 这是0：M（0对多）的可选型关系，意思就是一个人可能有0个电话，1个，或多个电话；某个电话可能没有主人，但是最多只能属于一个人。数据库里的实现方式：在phone表里设置一个可以为空的外键列，用这个列来关联person表。</p>
+  </li>
+  <li>
+    <p><code>Child</code> 这是1：M的强制型关系，这是在数据库里最常见的一种关系类型，一个人可能是或者不是一个会员，但是有可能对应好几个club的会员（假如member实体表述的是多个club里的所有会员记录），毫无疑问，一个会员必须是一个人。数据库里，会员表必须有一个强制不为空的外键。实现二实体间的关联。</p>
+  </li>
+</ul>
+
+<p>这个例子不太好，假设所有人的名字不重复。</p>
+
+<ul>
+  <li>
+    <p><code>Characteristic</code> 这是0：M的关联，在M的一端是强制性的。这意思是说，一个人必须有至少一个名字，可以有多个名字，一个名字可能属于某一个人（或没主人）。在数据库里，可以再name表里设置一个可以为空的外键指向person表，使用触发器或者程序来强制一个person必须至少有一个名字。</p>
+  </li>
+  <li>
+    <p><code>Paradox</code> 这是1：M实体两边都是强制型的关系。</p>
+  </li>
+  <li>
+    <p><code>Association</code> 这是M：M（多对多）的可选型关系。概念上是这样的：一个人可以选择为0个，1个或多个老板工作，一个老板可以有0个，1个或多个员工。一般对于M：M这种多对多关系在数据库里面拆分成两个0：M的关系。中间实体表名可以叫做employee，因为它是用来将person实体联系到老板实体的。</p>
+  </li>
+</ul>
+]]></content>
+  </entry>
+  
+</feed>

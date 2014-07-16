@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>获取GA数据并绘制chart - adev.cn</title>
+  <meta name="author" content="李骥平">
+
+  
+  <meta name="description" content="使用garb来获取GA上面的网站分析数据，再通过获取的数据用highcharts来绘制曲线 garb是一个用来调用Google Analytics API的Ruby gem.
+首先需要在rails中新建一个script： script/ga.rb 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://irubi.github.io/blog/2012/02/13/huo-qu-gashu-ju-bing-hui-zhi-chart/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="adev.cn" type="application/atom+xml">
+  <link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+  </script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+  
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40987303-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">adev.cn</a></h1>
+  
+    <h2>Stay hungry . Stay foolish</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:irubi.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">获取GA数据并绘制chart</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-13T12:00:00+08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2012</time>
+         
+        | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>使用garb来获取GA上面的网站分析数据，再通过获取的数据用highcharts来绘制曲线
+<!--more--></p>
+
+<p><a href="https://github.com/vigetlabs/garb">garb</a>是一个用来调用Google Analytics API的Ruby gem.
+首先需要在rails中新建一个script：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>script/ga.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">p</span> <span class="s2">&quot;----loGin Google----&quot;</span>
+</span><span class="line"><span class="ss">Garb</span><span class="p">:</span><span class="ss">:Session</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="s1">&#39;google account&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="nb">p</span> <span class="s2">&quot;----Get Profile----&quot;</span>
+</span><span class="line"><span class="n">profile</span> <span class="o">=</span> <span class="ss">Garb</span><span class="p">:</span><span class="ss">:Profile</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="s2">&quot;UA-XXXXXXX-X&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="nb">p</span> <span class="n">profile</span>
+</span><span class="line"><span class="nb">p</span> <span class="s2">&quot;-----Get unique PV----&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">start_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span> <span class="o">-</span> <span class="mi">30</span>
+</span><span class="line"><span class="n">end_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span>
+</span><span class="line">
+</span><span class="line"><span class="nb">p</span> <span class="s2">&quot;-----Define a specific page----&quot;</span>
+</span><span class="line"><span class="n">project_id</span> <span class="o">=</span> <span class="mi">123456</span>
+</span><span class="line">
+</span><span class="line"><span class="nb">p</span> <span class="s2">&quot;-----fetch the page (uri: /projects/12345) unique pageview----&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="p">(</span><span class="n">start_date</span><span class="o">.</span><span class="n">.end_date</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">date</span><span class="o">|</span>
+</span><span class="line">  <span class="n">result_set</span> <span class="o">=</span> <span class="no">Exits</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="ss">:start_date</span> <span class="o">=&gt;</span> <span class="n">date</span><span class="p">,</span>
+</span><span class="line">                              <span class="ss">:end_date</span> <span class="o">=&gt;</span> <span class="n">date</span><span class="p">,</span>
+</span><span class="line">                              <span class="ss">:filters</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:page_path</span><span class="o">.</span><span class="n">eql</span> <span class="o">=&gt;</span> <span class="s1">&#39;/projects/&#39;</span> <span class="o">+</span> <span class="n">project_id</span><span class="o">.</span><span class="n">to_s</span><span class="p">})</span>
+</span><span class="line">
+</span><span class="line">  <span class="n">result_set</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="o">|</span>
+</span><span class="line">    <span class="c1">#puts date.to_s + &quot;-&gt; &quot; + result.unique_pageviews.to_s</span>
+</span><span class="line">    <span class="no">Pv</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:ga_date</span> <span class="o">=&gt;</span> <span class="n">date</span><span class="p">,</span>
+</span><span class="line">              <span class="ss">:upv</span> <span class="o">=&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">unique_pageviews</span><span class="p">,</span>
+</span><span class="line">              <span class="ss">:pv</span> <span class="o">=&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">pageviews</span><span class="p">,</span>
+</span><span class="line">              <span class="ss">:project_id</span> <span class="o">=&gt;</span> <span class="n">project_id</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这里代码执行的前提是有一个存放pv数据的表和一个Exits的Model</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/models/exits.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">Exits</span>
+</span><span class="line">  <span class="kp">extend</span> <span class="ss">Garb</span><span class="p">:</span><span class="ss">:Model</span>
+</span><span class="line">  <span class="n">metrics</span> <span class="ss">:pageviews</span><span class="p">,</span> <span class="ss">:unique_pageviews</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/models/pv.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="c1"># t.date :ga_date</span>
+</span><span class="line"><span class="c1"># t.integer :upv, :default =&gt; 0</span>
+</span><span class="line"><span class="c1"># t.integer :pv, :default =&gt; 0</span>
+</span><span class="line"><span class="c1"># t.integer :project_id</span>
+</span><span class="line"><span class="c1"># t.timestamps</span>
+</span><span class="line"><span class="k">class</span> <span class="nc">Pv</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这样就可以将这个projects/123456页面的upv存放到数据库中了。不过这里的数据关系没有进行关联，仅作为一个demo来演示如何进行数据获取及chart绘制，所以具体应用可以根据实际情况进行设计。</p>
+
+<p>另外还需要说明的一点就是，这里是获取一个月之内的每日upv数据，可能存在该页面访问量为0的数据，这种数据不会存入数据库中，所以需要在绘图的时候进行判断处理。</p>
+
+<p>运行script/ga.rb的命令：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">script/rails runner script/ga_pv.rb
+</span><span class="line">script/rails runner -e production script/test.rb
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="cronga">可以在部署之后将命令加入cron中，让它每日定时去抓取GA的数据。</h2>
+
+<p>绘制chart:</p>
+
+<p>绘图使用<a href="http://www.highcharts.com/">highchart</a>, 下载highchats的js包，并放到app/assets/javascripts/目录下。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/views/demo/chart.html.erb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="err">&lt;</span>% content_for :head do %&gt;
+</span><span class="line">  <span class="err">&lt;</span>%= javascript_include_tag &quot;highcharts&quot; %&gt;
+</span><span class="line">
+</span><span class="line"><span class="err">&lt;</span>% end %&gt;
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line">    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">       <span class="nx">chart</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">Chart</span><span class="p">({</span>
+</span><span class="line">            <span class="nx">chart</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">renderTo</span><span class="o">:</span> <span class="s2">&quot;project_upv_chart&quot;</span><span class="p">,</span>
+</span><span class="line">                <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;spline&#39;</span>
+</span><span class="line">            <span class="p">},</span>
+</span><span class="line">            <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">              <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;每日不重复访客数&quot;</span>
+</span><span class="line">            <span class="p">},</span>
+</span><span class="line">            <span class="nx">xAxis</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span>
+</span><span class="line">                <span class="nx">labels</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">                    <span class="nx">formatter</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">                        <span class="k">return</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">dateFormat</span><span class="p">(</span><span class="s1">&#39;%b月%e日&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+</span><span class="line">                   <span class="p">}</span>
+</span><span class="line">               <span class="p">}</span>
+</span><span class="line">            <span class="p">},</span>
+</span><span class="line">            <span class="nx">yAxis</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">              <span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class="line">              <span class="nx">allowDecimals</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">              <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">                <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;访问数&quot;</span>
+</span><span class="line">              <span class="p">}</span>
+</span><span class="line">            <span class="p">},</span>
+</span><span class="line">            <span class="nx">tooltip</span><span class="o">:</span> <span class="p">{</span>
+</span><span class="line">              <span class="nx">formatter</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">                <span class="k">return</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">dateFormat</span><span class="p">(</span><span class="s2">&quot;%Y年%b月%e日 %A&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&lt;br/&gt;&quot;</span> <span class="o">+</span> <span class="s1">&#39;唯一身份浏览量： &#39;</span> <span class="o">+</span>
+</span><span class="line">                <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">numberFormat</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+</span><span class="line">              <span class="p">}</span>
+</span><span class="line">            <span class="p">},</span>
+</span><span class="line">            <span class="nx">series</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class="line">              <span class="nx">pointInterval</span><span class="o">:</span> <span class="o">&lt;%=</span> <span class="mi">1</span><span class="p">.</span><span class="nx">day</span><span class="p">.</span><span class="nx">to_i</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">%&gt;</span><span class="p">,</span>
+</span><span class="line">              <span class="o">&lt;%</span> <span class="nx">start_date</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Time</span><span class="p">.</span><span class="nx">now</span> <span class="o">-</span> <span class="mi">30</span><span class="p">.</span><span class="nx">days</span><span class="p">)</span> <span class="o">%&gt;</span>
+</span><span class="line">              <span class="o">&lt;%</span> <span class="nx">end_date</span> <span class="o">=</span> <span class="nx">Time</span><span class="p">.</span><span class="nx">now</span> <span class="o">%&gt;</span>
+</span><span class="line">              <span class="nx">pointStart</span><span class="o">:</span> <span class="o">&lt;%=</span> <span class="nx">start_date</span><span class="p">.</span><span class="nx">to_i</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">%&gt;</span><span class="p">,</span>
+</span><span class="line">              <span class="nx">data</span><span class="o">:</span> <span class="o">&lt;%=</span> <span class="p">(</span><span class="nx">start_date</span><span class="p">.</span><span class="nx">to_date</span><span class="p">..</span><span class="nx">end_date</span><span class="p">.</span><span class="nx">to_date</span><span class="p">).</span><span class="nx">map</span> <span class="p">{</span><span class="o">|</span><span class="nx">date</span><span class="o">|</span> <span class="nx">Pv</span><span class="p">.</span><span class="nx">find_by_ga_date</span><span class="p">(</span><span class="nx">date</span><span class="p">).</span><span class="nx">nil</span><span class="o">?</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">Pv</span><span class="p">.</span><span class="nx">find_by_ga_date</span><span class="p">(</span><span class="nx">date</span><span class="p">).</span><span class="nx">upv</span><span class="p">}.</span><span class="nx">inspect</span><span class="o">%&gt;</span>
+</span><span class="line">          <span class="p">}]</span>
+</span><span class="line">        <span class="p">});</span>
+</span><span class="line"><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.highcharts-legend&quot;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;project_upv_chart&quot;</span> <span class="na">style=</span><span class="s">&quot;width:560px; height:300px;&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在highcharts.js中修改几个需要汉化的地方，有月份，星期等。</p>
+
+<p>在上面的代码中，如果是单一的数据曲线，希望隐藏图表下面的series选择按钮，可以加入<code>$(".highcharts-legend").hide();</code></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">李骥平</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-13T12:00:00+08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/analytics/'>Analytics</a>, <a class='category' href='/blog/categories/google/'>Google</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/02/09/li-yong-bundlechuang-jian-%2C-fa-bu-%2C-shan-chu-gem/" title="Previous Post: 利用bundle创建、发布、删除gem">&laquo; 利用bundle创建、发布、删除gem</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/02/19/lion-shang-pei-zhi-ror-huan-jing/" title="Next Post: Lion 上配置 ROR 环境">Lion 上配置 ROR 环境 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"irubi"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/">Rails操作Access数据库(mdb)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/24/nei-wang-windows-serverbu-shu-railsying-yong/">内网windows server部署rails应用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/16/macshang-cha-zhao-yi-ji-yi-de-wifimi-ma/">mac上查找已记忆的wifi密码</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/16/insert-syntax-highlight-code-into-keynote/">Insert syntax highlight code into keynote</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/04/macshang-mian-ru-he-jie-jue-itunesluan-ma-de-wen-ti/">mac上面如何解决itunes乱码的问题</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 李骥平
+</p>
+
+</footer>
+  
+
+
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script>
+<!-- 
+ -->
+<!-- 
+ -->
+<!-- 
+ -->
+
+
+
+</body>
+</html>

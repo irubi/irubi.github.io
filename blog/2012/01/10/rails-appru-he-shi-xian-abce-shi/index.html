@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails app如何实现AB测试 - adev.cn</title>
+  <meta name="author" content="李骥平">
+
+  
+  <meta name="description" content="rails框架实现AB测试 1.什么是A/B测试 A/B测试又叫split测试，其实叫split测试更准确一些，因为测试并不局限于非A即B，而是适用于多种场景的。对于web应用来说，A/B测试是指一个页面对用户可呈现几种不同的view，以测试其相应功能在哪种view的情况下效果会更好一些。 2.A &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://irubi.github.io/blog/2012/01/10/rails-appru-he-shi-xian-abce-shi/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="adev.cn" type="application/atom+xml">
+  <link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+  </script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+  
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40987303-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">adev.cn</a></h1>
+  
+    <h2>Stay hungry . Stay foolish</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:irubi.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails app如何实现AB测试</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-10T12:16:00+08:00" pubdate data-updated="true">Jan 10<span>th</span>, 2012</time>
+         
+        | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>rails框架实现AB测试</p>
+
+<p>1.什么是A/B测试</p>
+
+<p>A/B测试又叫split测试，其实叫split测试更准确一些，因为测试并不局限于非A即B，而是适用于多种场景的。对于web应用来说，A/B测试是指一个页面对用户可呈现几种不同的view，以测试其相应功能在哪种view的情况下效果会更好一些。</p>
+
+<p>2.A/B测试的关键</p>
+
+<ul>
+  <li>用户数据量大, 平均出现; </li>
+  <li>相关度; 测试内容应该和相应业务逻辑相关，根据测试结果可以决策采取哪种view。</li>
+</ul>
+
+<!--more-->
+
+<p>举例来说，对于电商网站的某个产品介绍页面，该页面直接关系到订单提交（也即购买）的核心业务逻辑，现在进行A/B测试，呈现给用户不同的view，然后根据用户提交订单数量及用户打开该页面次数进行记录得到测试数据，进而判断哪个view是最好的。</p>
+
+<p><img class="center" src="http://pic.yupoo.com/irubi_v/CRLEK4ml/NHO5l.png" /></p>
+
+<p>3.A/B测试的手段</p>
+
+<p>Google Website Optimizer，可能是一个最简单的工具，但是它适合静态的页面，不能整合到动态网站中。所以，如果要在在动态网站中进行A/B测试必须将测试工具整合到应用中。</p>
+
+<p>在rails中实现A/B测试的方式：</p>
+
+<p>1.设置视图(2个或更多)</p>
+
+<p>2.视图与业务逻辑的相关性（多对一或多对多，个人认为多对一的测试较准确）</p>
+
+<p>3.设置视图的呈现逻辑（利用用户浏览器的session（登陆或匿名用户），随机数（用户发起请求时间隔呈现），注册用户id划分等等）</p>
+
+<p>4.在测试数据量增大到一定程度，数据相对稳定的情况下判断哪种视图最优。</p>
+
+<hr />
+
+<p>下面是rails中如何实现AB测试。
+rails提供了三个工具来做A/B测试。</p>
+
+<p>实现一个简单的demo，整个过程是这样的：一个博客程序，在新建post的时候给用户呈递不同的视图，然后根据用户创建文章的情况来判断哪种情况会更好。</p>
+
+<p>1.新建blog app：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>rails new blog -d mysql
+</span><span class="line"><span class="nv">$ </span><span class="nb">cd </span>blog
+</span><span class="line"><span class="nv">$ </span>rails g scaffold post title:string content:text
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>2.A/B测试工具</p>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/webandy/abingo">abingo</a> 这个是专门针对A/B测试的一个插件，简单易用，足以应付普通的测试场景的需求了。但可惜的是，它只能用于rails2，在rails3上面有bug，所以这里不详细介绍了。<a href="railscasts.com/episodes/214-a-b-testing-with-a-bingo?view=asciicast">railscasts</a>中有一集做了详细介绍。</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/assaf/vanity">vanity</a>比较专业的一个。他是专门用来做Experiment Driven Development（体验驱动开发）的一个gem, A/B测试只是其中一部分，<a href="http://vanity.labnotes.org/ab_testing.html">参考</a>。</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/andrew/split">split</a>支持rails 3，并且使用 redis来作数据存储，所以需要安装redis环境</p>
+  </li>
+</ul>
+
+<p>安装gem</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>gem <span class="s1">&#39;split&#39;</span>
+</span><span class="line"><span class="nv">$ </span>bundle install
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>安装并启动redis(mac环境下)</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nv">$ </span>brew install redis
+</span><span class="line"><span class="nv">$ </span>redis-server /usr/local/etc/redis.conf
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在新建post的页面的同一个位置设置三种不同的视图，分别命名为plan<em>1, plan</em>2, plan_3。当用户在刷新这一页的时候会出现这三种不同的视图。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/views/posts/new.html.erb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="no">New</span> <span class="n">post</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+</span><span class="line"><span class="sr">&lt;% ab_test(&quot;create_post_intro&quot;, &quot;plan_1&quot;, &quot;plan_2&quot;, &quot;plan_3&quot;) do |plan|%&gt;</span>
+</span><span class="line"><span class="sr">  &lt;% case plan %&gt;</span>
+</span><span class="line"><span class="sr">  &lt;% when &quot;plan_1&quot;%&gt;</span>
+</span><span class="line"><span class="sr">     &lt;div id=&quot;plan_1&quot;&gt;</span>
+</span><span class="line"><span class="sr">        11..</span>
+</span><span class="line"><span class="sr">     &lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</span><span class="line">  <span class="o">&lt;</span><span class="sx">% when </span><span class="s2">&quot;plan_2&quot;</span><span class="sx">%&gt;</span>
+</span><span class="line"><span class="sx">     &lt;div id=&quot;plan_2&quot;&gt;</span>
+</span><span class="line">        <span class="mi">22</span><span class="o">.</span><span class="n">.</span>
+</span><span class="line">     <span class="o">&lt;</span><span class="sr">/div&gt;</span>
+</span><span class="line"><span class="sr">  &lt;% when &quot;plan_3&quot;%&gt;</span>
+</span><span class="line"><span class="sr">     &lt;div id=&quot;plan_3&quot;&gt;</span>
+</span><span class="line"><span class="sr">        33..</span>
+</span><span class="line"><span class="sr">     &lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</span><span class="line">  <span class="o">&lt;</span><span class="sx">% end %&gt;</span>
+</span><span class="line"><span class="sx">&lt;% end %&gt;</span>
+</span><span class="line"><span class="o">&lt;</span><span class="sx">%= render &#39;form&#39; %&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="sx">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="n">posts_path</span> <span class="o">%&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果现在查看浏览器posts/new的话，可以通过刷新看到三个不同的视图。</p>
+
+<p>create_post_intro可以看作这个A/B测试的名称描述，下面在create的action中加入记录：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/controllers/posts_controller.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">def</span> <span class="nf">create</span>
+</span><span class="line">  <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:post</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class="line">    <span class="k">if</span> <span class="vi">@post</span><span class="o">.</span><span class="n">save</span>
+</span><span class="line">      <span class="n">finished</span><span class="p">(</span><span class="s2">&quot;create_post_intro&quot;</span><span class="p">)</span>
+</span><span class="line">      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">redirect_to</span> <span class="vi">@post</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Post was successfully created.&#39;</span> <span class="p">}</span>
+</span><span class="line">      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="vi">@post</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:created</span><span class="p">,</span> <span class="ss">location</span><span class="p">:</span> <span class="vi">@post</span> <span class="p">}</span>
+</span><span class="line">    <span class="k">else</span>
+</span><span class="line">      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">action</span><span class="p">:</span> <span class="s2">&quot;new&quot;</span> <span class="p">}</span>
+</span><span class="line">      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="vi">@post</span><span class="o">.</span><span class="n">errors</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="ss">:unprocessable_entity</span> <span class="p">}</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可以测试一下提交表单，未提交表单等等。</p>
+
+<p>如何显示测试结果？</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>app/config/routes.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;split/dashboard&#39;</span>
+</span><span class="line"><span class="ss">Blog</span><span class="p">:</span><span class="ss">:Application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">draw</span> <span class="k">do</span>
+</span><span class="line">  <span class="n">mount</span> <span class="ss">Split</span><span class="p">:</span><span class="ss">:Dashboard</span> <span class="o">=&gt;</span> <span class="s2">&quot;/split&quot;</span>
+</span><span class="line">  <span class="n">resources</span> <span class="ss">:posts</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>此时打开/split可以看到结果如下图：
+<img class="center" src="http://pic.yupoo.com/irubi_v/CRLEK4ml/NHO5l.png" /></p>
+
+<p>可以根据split的统计数据进行判断和决策。</p>
+
+<p>现在基本上A/B测试的功能已经搞定了，但是没有定制视图展示策略，没有在显示/split的页面加入auth。具体方式可以参考<a href="https://github.com/andrew/split">split</a> 在github上的文档.</p>
+
+<p>另外，<a href="http://www.smashingmagazine.com/2010/06/24/the-ultimate-guide-to-a-b-testing/">这里</a>对于A/B测试做什么，怎么做，以及一些线上的demo，介绍的还不错。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">李骥平</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-10T12:16:00+08:00" pubdate data-updated="true">Jan 10<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/abce-shi/'>AB测试</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/11/25/ti-huan-htmlzhong-de-lian-jie-di-zhi/" title="Previous Post: 替换html中的链接地址">&laquo; 替换html中的链接地址</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/02/09/li-yong-bundlechuang-jian-%2C-fa-bu-%2C-shan-chu-gem/" title="Next Post: 利用bundle创建、发布、删除gem">利用bundle创建、发布、删除gem &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"irubi"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/">Rails操作Access数据库(mdb)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/24/nei-wang-windows-serverbu-shu-railsying-yong/">内网windows server部署rails应用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/16/macshang-cha-zhao-yi-ji-yi-de-wifimi-ma/">mac上查找已记忆的wifi密码</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/16/insert-syntax-highlight-code-into-keynote/">Insert syntax highlight code into keynote</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/04/macshang-mian-ru-he-jie-jue-itunesluan-ma-de-wen-ti/">mac上面如何解决itunes乱码的问题</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 李骥平
+</p>
+
+</footer>
+  
+
+
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script>
+<!-- 
+ -->
+<!-- 
+ -->
+<!-- 
+ -->
+
+
+
+</body>
+</html>

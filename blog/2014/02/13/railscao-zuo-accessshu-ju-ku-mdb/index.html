@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails操作Access数据库(mdb) - adev.cn</title>
+  <meta name="author" content="李骥平">
+
+  
+  <meta name="description" content="应用场景： windows上跑着一个短信猫的服务，这个程序二次开发是通过修改服务所使用的一个access数据库，插入记录即可实现发短信的功能。 linux上是Rails程序，开发了一个通讯录和发短信的功能，发短信时需要在create短信之后触发修改access数据库的操作。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://irubi.github.io/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="adev.cn" type="application/atom+xml">
+  <link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+  </script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+  
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40987303-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">adev.cn</a></h1>
+  
+    <h2>Stay hungry . Stay foolish</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:irubi.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails操作Access数据库(mdb)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-13T15:25:00+08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2014</time>
+         
+        | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>应用场景：</p>
+
+<ul>
+  <li>
+    <p><code>windows</code>上跑着一个短信猫的服务，这个程序二次开发是通过修改服务所使用的一个<code>access</code>数据库，插入记录即可实现发短信的功能。</p>
+  </li>
+  <li>
+    <p><code>linux上</code>是<code>Rails</code>程序，开发了一个通讯录和发短信的功能，发短信时需要在<code>create</code>短信之后触发修改<code>access</code>数据库的操作。</p>
+  </li>
+</ul>
+
+<p>但是<code>Rails</code>连接<code>windows</code>下的<code>access</code>(mdb数据库)比较麻烦，需要调用<code>mdb-tools</code>之类的东西，而且对中文支持可能会出现问题。</p>
+
+<p>所以思路是这样的，在<code>windows</code>上安装<code>ssh server</code>，用<code>freesshd.exe</code>(开源免费)。安装好之后建立一个<code>ssh</code>用户(如root),并且将<code>linux</code>服务器上的<code>ssh\id_rsa.pub</code>内容复制到<code>c:/freesshd/root</code>文件中，如果还要加入其他ssh（root）用户，也可以将<code>id_rsa.pub</code>内容复制进去。</p>
+
+<p>建立<code>ssh</code>通道之后，就可以用<code>ruby</code>执行<code>ssh</code>远程命令来操纵<code>windows</code>来执行命令操作<code>access</code>数据库。在<code>windows</code>上建立脚本如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>insertsms.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line">  <span class="c1">#!/usr/bin/env ruby</span>
+</span><span class="line">  <span class="c1"># encoding: utf-8</span>
+</span><span class="line">  <span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+</span><span class="line">  <span class="nb">require</span> <span class="s1">&#39;sequel&#39;</span>
+</span><span class="line">  <span class="nb">require</span> <span class="s2">&quot;net/http&quot;</span>
+</span><span class="line">  <span class="nb">require</span> <span class="s2">&quot;uri&quot;</span>
+</span><span class="line">  <span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
+</span><span class="line">
+</span><span class="line">  <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">  <span class="n">response</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="ss">Net</span><span class="p">:</span><span class="ss">:HTTP</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="nb">puts</span> <span class="n">uri</span>
+</span><span class="line">  <span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="o">.</span><span class="n">ado</span><span class="p">(</span><span class="ss">:conn_string</span><span class="o">=&gt;</span><span class="s1">&#39;Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\website\db\smsdata.mdb&#39;</span><span class="p">)</span>
+</span><span class="line">  <span class="n">items</span> <span class="o">=</span> <span class="no">DB</span><span class="o">[</span><span class="ss">:OutBox</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="n">phones</span> <span class="o">=</span> <span class="n">response</span><span class="o">[</span><span class="s2">&quot;phones&quot;</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+</span><span class="line">  <span class="n">msg</span> <span class="o">=</span> <span class="n">response</span><span class="o">[</span><span class="s2">&quot;msg&quot;</span><span class="o">].</span><span class="n">dup</span><span class="o">.</span><span class="n">force_encoding</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span class="line">  <span class="n">sent_at</span> <span class="o">=</span> <span class="n">response</span><span class="o">[</span><span class="s2">&quot;sent_at&quot;</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="n">phones</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span><span class="o">|</span><span class="n">phone</span><span class="o">|</span>
+</span><span class="line">    <span class="n">items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="ss">:Mbno</span> <span class="o">=&gt;</span> <span class="n">phone</span><span class="p">,</span> <span class="ss">:Msg</span> <span class="o">=&gt;</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">:SendTime</span> <span class="o">=&gt;</span> <span class="n">sent_at</span><span class="p">)</span>
+</span><span class="line">  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>linux服务器 Rails程序：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>model/sms.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line">  <span class="c1">#!/usr/bin/env ruby</span>
+</span><span class="line">  <span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+</span><span class="line">  <span class="nb">require</span> <span class="s1">&#39;net/ssh&#39;</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">class</span> <span class="nc">Sms</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class="line">    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+</span><span class="line">      <span class="p">{</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">:phones</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">contact</span><span class="p">,</span> <span class="ss">:msg</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="ss">:sent_at</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">sent_at</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/%d %H:%M:%S&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">def</span> <span class="nf">send_msg</span>
+</span><span class="line">      <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;192.192.100.11&#39;</span>
+</span><span class="line">      <span class="n">user</span> <span class="o">=</span> <span class="s1">&#39;root&#39;</span>
+</span><span class="line">      <span class="n">sms_json_url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class="line">      <span class="k">if</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span>
+</span><span class="line">        <span class="n">sms_json_url</span> <span class="o">=</span> <span class="s1">&#39;http://192.192.102.97:3000&#39;</span> <span class="o">+</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">url_helpers</span><span class="o">.</span><span class="n">admin_sms_path</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span>
+</span><span class="line">      <span class="k">elsif</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span>
+</span><span class="line">        <span class="n">sms_json_url</span> <span class="o">=</span> <span class="s1">&#39;http://192.192.100.22&#39;</span> <span class="o">+</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">url_helpers</span><span class="o">.</span><span class="n">admin_sms_path</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">
+</span><span class="line">      <span class="ss">Net</span><span class="p">:</span><span class="ss">:SSH</span><span class="o">.</span><span class="n">start</span><span class="p">(</span> <span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="k">do</span><span class="o">|</span><span class="n">ssh</span><span class="o">|</span>
+</span><span class="line">        <span class="n">ssh</span><span class="o">.</span><span class="n">exec!</span><span class="p">(</span><span class="s2">&quot;cmd /c c:/ruby200/bin/ruby d:/website/insertsms.rb </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">sms_json_url</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class="line">      <span class="k">end</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>因为如果从<code>Rails</code>调用<code>windows</code>上的<code>insertsms.rb</code>这段<code>script</code>如果传中文参数时，会有乱码问题出现，所以将插入短信所需数据参数以<code>json</code>的方式提供，直接让<code>insertsms.rb</code>去读取，将数据处理之后插入<code>access</code>数据库即可。</p>
+
+<p>通信过程可能会耗费时间，造成响应时间长，所以需要引入<code>delay_job</code>来提升用户体验。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">李骥平</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-13T15:25:00+08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/access/'>access</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/windows/'>windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/24/nei-wang-windows-serverbu-shu-railsying-yong/" title="Previous Post: 内网windows server部署rails应用">&laquo; 内网windows server部署rails应用</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"irubi"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/">Rails操作Access数据库(mdb)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/24/nei-wang-windows-serverbu-shu-railsying-yong/">内网windows server部署rails应用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/16/macshang-cha-zhao-yi-ji-yi-de-wifimi-ma/">mac上查找已记忆的wifi密码</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/16/insert-syntax-highlight-code-into-keynote/">Insert syntax highlight code into keynote</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/04/macshang-mian-ru-he-jie-jue-itunesluan-ma-de-wen-ti/">mac上面如何解决itunes乱码的问题</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - 李骥平
+</p>
+
+</footer>
+  
+
+
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script>
+<!-- 
+ -->
+<!-- 
+ -->
+<!-- 
+ -->
+
+
+
+</body>
+</html>

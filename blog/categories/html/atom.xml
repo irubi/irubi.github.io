@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: html | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/html/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2014-07-16T19:32:42+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[替换html中的链接地址]]></title>
+    <link href="http://irubi.github.io/blog/2011/11/25/ti-huan-htmlzhong-de-lian-jie-di-zhi/"/>
+    <updated>2011-11-25T12:19:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2011/11/25/ti-huan-htmlzhong-de-lian-jie-di-zhi</id>
+    <content type="html"><![CDATA[<p>应用场景：将文本或者html中链接进行短地址转换，或者替换为可追踪的链接。
+<!--more-->
+代码：
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>gsub_links.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="err">‘</span><span class="no">Digest</span><span class="err">’</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">gsub_links</span><span class="p">(</span><span class="n">conetnt</span><span class="p">,</span> <span class="n">domain</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">hash_links</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>  <span class="n">time</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'>  <span class="n">links_arr</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/&amp;lt;a.&lt;em&gt;?href=([’”])(.&lt;/em</span><span class="o">&gt;</span><span class="sc">?)</span><span class="p">\</span><span class="mi">1</span><span class="o">.</span><span class="n">&lt;em</span><span class="o">&gt;</span><span class="p">?</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">/</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">links_arr</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">l</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">hash_links</span><span class="o">[</span><span class="err">”</span><span class="c1">#{l}”] = Digest::SHA1.hexdigest(l+time.to_s)[8..16]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">content</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/&amp;lt;a.&lt;/em</span><span class="o">&gt;</span><span class="p">?</span><span class="n">href</span><span class="o">=</span><span class="p">(</span><span class="o">[</span><span class="err">’”</span><span class="o">]</span><span class="p">)(</span><span class="o">.</span><span class="n">&lt;em</span><span class="o">&gt;</span><span class="sc">?)</span><span class="p">\</span><span class="mi">1</span><span class="o">.</span><span class="n">&lt;</span><span class="sr">/em&gt;?&amp;gt;/</span><span class="p">){</span><span class="o">|</span><span class="n">s</span><span class="o">|</span><span class="n">s</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="vg">$2</span><span class="p">,</span> <span class="err">“</span><span class="c1">#{domain}/#{Digest::SHA1.hexdigest($2+time.to_s)[8..16]}”)}</span>
+</span><span class='line'><span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>content是html代码的内容，对于正则表达式<code>/&lt;a.*?href=(['"])(.*?)\1.*?&gt;/</code>会匹配到类似<code>&lt;a href="http://test.com"&gt;</code>的字符串，匹配会得到两个结果，第一个是<code>"</code>,第二个是<code>http://test.com</code>,可以通过这个表达式来达到替换链接的目的。而<code>#{Digest::SHA1.hexdigest($2+time.to_s)[8..16]}</code>可以对url地址进行一个转换，得到一个9位的字符串，通过这个算法确保url被转换成短地址的唯一性和随机性。
+最后，link_hash就是原来链接和短链接的对应关系，content中的链接已经被短链接所替代。</p>
+]]></content>
+  </entry>
+  
+</feed>
