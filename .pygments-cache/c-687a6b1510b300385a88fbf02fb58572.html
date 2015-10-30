@@ -1,0 +1,27 @@
+<div class="highlight"><pre><span class="cp">#include “stdio.h” </span>
+<span class="cp">#include “math.h” &lt;/p&gt;</span>
+
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kt">void</span> <span class="n">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">month</span><span class="p">;</span> 
+  <span class="c1">//long int num=1;                            //the number of rabbits </span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>                                    <span class="c1">//loop variable </span>
+  <span class="kt">int</span> <span class="n">f1</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">f2</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">Which</span> <span class="n">month</span> <span class="n">would</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">konw</span> <span class="n">how</span> <span class="n">many</span> <span class="n">rabbits</span> <span class="o">?</span><span class="err">”</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="n">month</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="mi">1</span><span class="err">—</span><span class="o">-</span><span class="mi">1</span> <span class="n">pair</span> <span class="n">of</span> <span class="n">rabbit</span><span class="err">\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="mi">2</span><span class="err">—</span><span class="o">-</span><span class="mi">1</span> <span class="n">pairs</span> <span class="n">of</span> <span class="n">rabbits</span><span class="err">\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> 
+        <span class="n">i</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span> 
+  <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span><span class="n">month</span><span class="p">)</span> 
+  <span class="p">{</span> <span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">f1</span><span class="o">=</span><span class="n">f1</span><span class="o">+</span><span class="n">f2</span><span class="p">;</span> 
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d----%d pairs of rabbits</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">f1</span><span class="p">);</span> 
+<span class="n">f2</span><span class="o">=</span><span class="n">f1</span><span class="o">+</span><span class="n">f2</span><span class="p">;</span> 
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d----%d pairs of rabbits</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="o">++</span><span class="n">i</span><span class="p">,</span><span class="n">f2</span><span class="p">);</span> 
+<span class="n">i</span><span class="o">++</span><span class="p">;</span>    <span class="p">}</span>    <span class="c1">//printf(&quot;\nThe %d month has %d number rabbits.\n&quot;,month,num);          } </span>
+<span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</pre></div>

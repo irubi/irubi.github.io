@@ -1,0 +1,20 @@
+<div class="highlight"><pre><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;def stairs(max) </span>
+<span class="sr">    f=max </span>
+<span class="sr">    while f!=0   &lt;br /</span><span class="o">&gt;</span>
+        <span class="k">yield</span> <span class="n">f</span> 
+        <span class="n">f</span><span class="o">-=</span><span class="mi">1</span> 
+    <span class="k">end</span> 
+<span class="k">end</span> <span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;10.times {print “     “} </span>
+<span class="sr">print “\1    \1\n” </span>
+<span class="sr">stairs(10) do |f|  &lt;br /</span><span class="o">&gt;</span>
+    <span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>  <span class="o">&lt;</span><span class="n">br</span> <span class="sr">/&gt;</span>
+<span class="sr">        print “     “ </span>
+<span class="sr">    end </span>
+<span class="sr">    print “&lt;em&gt;|” </span>
+<span class="sr">print “\n” </span>
+<span class="sr">end  &lt;br /</span><span class="o">&gt;</span>
+</pre></div>

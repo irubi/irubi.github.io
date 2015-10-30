@@ -1,0 +1,23 @@
+<div class="highlight"><pre>  <span class="c1">#!/usr/bin/env ruby</span>
+  <span class="c1"># encoding: utf-8</span>
+  <span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+  <span class="nb">require</span> <span class="s1">&#39;sequel&#39;</span>
+  <span class="nb">require</span> <span class="s2">&quot;net/http&quot;</span>
+  <span class="nb">require</span> <span class="s2">&quot;uri&quot;</span>
+  <span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
+  
+  <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">)</span>
+  <span class="n">response</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="ss">Net</span><span class="p">:</span><span class="ss">:HTTP</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+  
+  <span class="nb">puts</span> <span class="n">uri</span>
+  <span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="o">.</span><span class="n">ado</span><span class="p">(</span><span class="ss">:conn_string</span><span class="o">=&gt;</span><span class="s1">&#39;Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\website\db\smsdata.mdb&#39;</span><span class="p">)</span>
+  <span class="n">items</span> <span class="o">=</span> <span class="no">DB</span><span class="o">[</span><span class="ss">:OutBox</span><span class="o">]</span> 
+  
+  <span class="n">phones</span> <span class="o">=</span> <span class="n">response</span><span class="o">[</span><span class="s2">&quot;phones&quot;</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+  <span class="n">msg</span> <span class="o">=</span> <span class="n">response</span><span class="o">[</span><span class="s2">&quot;msg&quot;</span><span class="o">].</span><span class="n">dup</span><span class="o">.</span><span class="n">force_encoding</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+  <span class="n">sent_at</span> <span class="o">=</span> <span class="n">response</span><span class="o">[</span><span class="s2">&quot;sent_at&quot;</span><span class="o">]</span>
+  
+  <span class="n">phones</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span><span class="o">|</span><span class="n">phone</span><span class="o">|</span>
+    <span class="n">items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="ss">:Mbno</span> <span class="o">=&gt;</span> <span class="n">phone</span><span class="p">,</span> <span class="ss">:Msg</span> <span class="o">=&gt;</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">:SendTime</span> <span class="o">=&gt;</span> <span class="n">sent_at</span><span class="p">)</span>
+  <span class="k">end</span>
+</pre></div>

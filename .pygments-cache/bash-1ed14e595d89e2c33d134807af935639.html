@@ -1,0 +1,12 @@
+<div class="highlight"><pre><span class="nb">cd </span>mmseg-3.x.x
+aclocal
+libtoolize --force
+automake --add-missing
+autoconf
+autoheader
+make clean <span class="c">#此时如有错误可忽略不管</span>
+./configure --prefix<span class="o">=</span>/usr/local/mmseg3
+make
+make install
+cp -f src/*/*.h /usr/local/mmseg3/include/mmseg/
+</pre></div>

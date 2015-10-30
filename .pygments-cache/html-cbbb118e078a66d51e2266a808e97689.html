@@ -1,0 +1,48 @@
+<div class="highlight"><pre><span class="err">&lt;</span>% content_for :head do %&gt;
+  <span class="err">&lt;</span>%= javascript_include_tag &quot;highcharts&quot; %&gt;
+
+<span class="err">&lt;</span>% end %&gt;
+<span class="nt">&lt;script&gt;</span>
+    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+       <span class="nx">chart</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">Chart</span><span class="p">({</span>
+            <span class="nx">chart</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">renderTo</span><span class="o">:</span> <span class="s2">&quot;project_upv_chart&quot;</span><span class="p">,</span>
+                <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;spline&#39;</span>
+            <span class="p">},</span>
+            <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+              <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;每日不重复访客数&quot;</span>
+            <span class="p">},</span>
+            <span class="nx">xAxis</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span>
+                <span class="nx">labels</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">formatter</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                        <span class="k">return</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">dateFormat</span><span class="p">(</span><span class="s1">&#39;%b月%e日&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+                   <span class="p">}</span>
+               <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="nx">yAxis</span><span class="o">:</span> <span class="p">{</span>
+              <span class="nx">min</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="nx">allowDecimals</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+              <span class="nx">title</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;访问数&quot;</span>
+              <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="nx">tooltip</span><span class="o">:</span> <span class="p">{</span>
+              <span class="nx">formatter</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">dateFormat</span><span class="p">(</span><span class="s2">&quot;%Y年%b月%e日 %A&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&lt;br/&gt;&quot;</span> <span class="o">+</span> <span class="s1">&#39;唯一身份浏览量： &#39;</span> <span class="o">+</span>
+                <span class="nx">Highcharts</span><span class="p">.</span><span class="nx">numberFormat</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+              <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="nx">series</span><span class="o">:</span> <span class="p">[{</span>
+              <span class="nx">pointInterval</span><span class="o">:</span> <span class="o">&lt;%=</span> <span class="mi">1</span><span class="p">.</span><span class="nx">day</span><span class="p">.</span><span class="nx">to_i</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">%&gt;</span><span class="p">,</span>
+              <span class="o">&lt;%</span> <span class="nx">start_date</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Time</span><span class="p">.</span><span class="nx">now</span> <span class="o">-</span> <span class="mi">30</span><span class="p">.</span><span class="nx">days</span><span class="p">)</span> <span class="o">%&gt;</span>
+              <span class="o">&lt;%</span> <span class="nx">end_date</span> <span class="o">=</span> <span class="nx">Time</span><span class="p">.</span><span class="nx">now</span> <span class="o">%&gt;</span>
+              <span class="nx">pointStart</span><span class="o">:</span> <span class="o">&lt;%=</span> <span class="nx">start_date</span><span class="p">.</span><span class="nx">to_i</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">%&gt;</span><span class="p">,</span>
+              <span class="nx">data</span><span class="o">:</span> <span class="o">&lt;%=</span> <span class="p">(</span><span class="nx">start_date</span><span class="p">.</span><span class="nx">to_date</span><span class="p">..</span><span class="nx">end_date</span><span class="p">.</span><span class="nx">to_date</span><span class="p">).</span><span class="nx">map</span> <span class="p">{</span><span class="o">|</span><span class="nx">date</span><span class="o">|</span> <span class="nx">Pv</span><span class="p">.</span><span class="nx">find_by_ga_date</span><span class="p">(</span><span class="nx">date</span><span class="p">).</span><span class="nx">nil</span><span class="o">?</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">Pv</span><span class="p">.</span><span class="nx">find_by_ga_date</span><span class="p">(</span><span class="nx">date</span><span class="p">).</span><span class="nx">upv</span><span class="p">}.</span><span class="nx">inspect</span><span class="o">%&gt;</span>
+          <span class="p">}]</span>
+        <span class="p">});</span>
+<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.highcharts-legend&quot;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+    <span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;project_upv_chart&quot;</span> <span class="na">style=</span><span class="s">&quot;width:560px; height:300px;&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>

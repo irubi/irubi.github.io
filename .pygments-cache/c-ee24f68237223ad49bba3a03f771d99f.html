@@ -1,0 +1,32 @@
+<div class="highlight"><pre><span class="cp">#include “stdio.h” </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">n</span><span class="p">;</span> 
+        <span class="kt">int</span> <span class="n">newline</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+<span class="nl">loop1:</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">Please</span> <span class="n">input</span> <span class="n">the</span> <span class="n">natural</span> <span class="n">number</span><span class="p">(</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span><span class="err">”</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="n">n</span><span class="p">);</span> 
+  <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>  <span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+  <span class="p">{</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">Invalid</span> <span class="n">number</span><span class="err">\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> 
+    <span class="k">goto</span> <span class="n">loop1</span><span class="p">;</span> 
+  <span class="p">}</span> 
+  <span class="k">while</span><span class="p">(</span><span class="n">n</span><span class="o">!=</span><span class="mi">1</span><span class="p">)</span> 
+  <span class="p">{</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>  <span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+    <span class="p">{</span> 
+      <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> 
+      <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span>    <span class="err">“</span><span class="p">,</span><span class="n">n</span><span class="p">);</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+    <span class="p">{</span> 
+      <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="o">*</span><span class="mi">3</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> 
+      <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span> <span class="err">“</span><span class="p">,</span><span class="n">n</span><span class="p">);</span> 
+    <span class="p">}</span> 
+    <span class="n">newline</span><span class="o">++</span><span class="p">;</span> 
+    <span class="k">if</span><span class="p">(</span><span class="n">newline</span><span class="o">%</span><span class="mi">10</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="err">“\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> <span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="err">“\</span><span class="n">nThe</span> <span class="n">total</span> <span class="n">execute</span> <span class="n">number</span> <span class="n">is</span> <span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="n">newline</span><span class="p">);</span> 
+<span class="p">}</span> 
+</pre></div>

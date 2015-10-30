@@ -1,0 +1,19 @@
+<div class="highlight"><pre>sudo ln -s /usr/local/mmseg/bin/mmseg /usr/bin
+
+<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># sh buildconf.sh </span>
+
+<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># export LIBS=&quot;-ldl -lutil -Xlinker -export-dynamic&quot;</span>
+
+<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># ./configure --prefix=/usr/local/coreseek --without-python --without-unixodbc --with-mysql --with-mmseg --with-mmseg-includes=/usr/local/mmseg/include/mmseg/ --with-mmseg-libs=/usr/local/mmseg/lib/</span>
+
+<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># make &amp;&amp; make install</span>
+
+<span class="nv">$ </span>yum install mysql-devel libxml2-devel expat-devel
+
+<span class="nv">$ </span><span class="nb">cd </span>csft-3.2.14
+
+<span class="nv">$ </span>make clean
+
+<span class="nv">$ </span>./configure -prefix<span class="o">=</span>/usr/local/coreseek  --without-unixodbc --with-mmseg --with-mmseg-includes<span class="o">=</span>/usr/local/mmseg/include/mmseg/ --with-mmseg-libs<span class="o">=</span>/usr/local/mmseg/lib/ --with-mysql
+<span class="nv">$ </span>make <span class="o">&amp;&amp;</span> make install
+</pre></div>

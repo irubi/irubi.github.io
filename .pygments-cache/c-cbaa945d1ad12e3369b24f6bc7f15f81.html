@@ -1,0 +1,39 @@
+<div class="highlight"><pre><span class="cp">#include &quot;stdio.h&quot; </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">num1</span><span class="p">,</span><span class="n">num2</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">temp_num</span><span class="p">;</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Please input num1,num2:&quot;</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d,%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">num1</span><span class="p">,</span><span class="o">&amp;</span><span class="n">num2</span><span class="p">);</span> 
+  <span class="k">if</span><span class="p">(</span><span class="n">num1</span><span class="o">&gt;</span><span class="n">num2</span><span class="p">)</span> 
+  <span class="p">{</span> 
+    <span class="n">temp_num</span><span class="o">=</span><span class="n">num1</span><span class="p">;</span> 
+    <span class="n">num1</span><span class="o">=</span><span class="n">num2</span><span class="p">;</span> 
+    <span class="n">num2</span><span class="o">=</span><span class="n">temp_num</span><span class="p">;</span> 
+  <span class="p">}</span> 
+    
+        <span class="k">if</span><span class="p">(</span><span class="n">num2</span><span class="o">%</span><span class="n">num1</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;The greatest common divisor is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">num1</span><span class="p">);</span> 
+  <span class="k">else</span> 
+  <span class="p">{</span> 
+            <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">num1</span><span class="p">;</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">--</span><span class="p">)</span> 
+        <span class="k">if</span><span class="p">(</span> <span class="p">(</span><span class="n">num1</span><span class="o">%</span><span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">num2</span><span class="o">%</span><span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="p">)</span> 
+        <span class="p">{</span> 
+         <span class="n">printf</span><span class="p">(</span><span class="s">&quot;The greatest common divisor is %d    </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">);</span> 
+         <span class="k">break</span><span class="p">;</span> 
+        <span class="p">}</span> 
+  <span class="p">}</span> 
+         
+        
+  <span class="k">if</span><span class="p">(</span><span class="n">num2</span><span class="o">%</span><span class="n">num1</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;The    least common multiple is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">num2</span><span class="p">);</span> 
+  <span class="k">else</span> 
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="n">num2</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">num1</span><span class="o">*</span><span class="n">num2</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> 
+      <span class="k">if</span><span class="p">(</span> <span class="n">j</span><span class="o">%</span><span class="n">num1</span><span class="o">==</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">j</span><span class="o">%</span><span class="n">num2</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+      <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;The least common multiple is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">j</span><span class="p">);</span> 
+        <span class="k">break</span><span class="p">;</span> 
+      <span class="p">}</span> 
+ 
+<span class="p">}</span> 
+</pre></div>

@@ -1,0 +1,31 @@
+<div class="highlight"><pre><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;p “—-loGin Google—-“</span>
+<span class="sr">Garb::Session.login(‘google account’, ‘password’)</span>
+<span class="sr">p “—-Get Profile—-“</span>
+<span class="sr">profile = Garb::Profile.first(“UA-XXXXXXX-X”)</span>
+<span class="sr">p profile</span>
+<span class="sr">p “—–Get unique PV—-“&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">start_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span> <span class="o">-</span> <span class="mi">30</span>
+<span class="n">end_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;p “—–Define a specific page—-“</span>
+<span class="sr">project_id = 123456&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="nb">p</span> <span class="err">“—–</span><span class="n">fetch</span> <span class="n">the</span> <span class="n">page</span> <span class="p">(</span><span class="ss">uri</span><span class="p">:</span> <span class="sr">/projects/</span><span class="mi">12345</span><span class="p">)</span> <span class="n">unique</span> <span class="n">pageview</span><span class="err">—</span><span class="o">-</span><span class="err">“</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;(start_date..end_date).each do |date|</span>
+<span class="sr">  result_set = Exits.results(profile, :start_date =&amp;gt; date, </span>
+<span class="sr">                              :end_date =&amp;gt; date, </span>
+<span class="sr">                              :filters =&amp;gt; {:page_path.eql =&amp;gt; ‘/</span><span class="n">projects</span><span class="o">/</span><span class="err">’</span> <span class="o">+</span> <span class="n">project_id</span><span class="o">.</span><span class="n">to_s</span><span class="p">})</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;result_set.each do |result|</span>
+<span class="sr">    #puts date.to_s + “-&amp;gt; “ + result.unique_pageviews.to_s</span>
+<span class="sr">    Pv.create(:ga_date =&amp;gt; date, </span>
+<span class="sr">              :upv =&amp;gt; result.unique_pageviews, </span>
+<span class="sr">              :pv =&amp;gt; result.pageviews,</span>
+<span class="sr">              :project_id =&amp;gt; project_id.to_s)</span>
+<span class="sr">  end</span>
+<span class="sr">end</span>
+</pre></div>

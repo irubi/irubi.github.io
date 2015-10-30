@@ -1,0 +1,7 @@
+<div class="highlight"><pre><span class="nv">DBbinPath</span><span class="o">=</span>/usr/bin/
+<span class="nv">DBName</span><span class="o">=</span>project_production
+<span class="nv">BackupPath</span><span class="o">=</span>/home/username/dbbak/project_db&lt;/p&gt;
+
+&lt;p&gt;mysqldump –user<span class="o">=</span>”db_username” –password<span class="o">=</span>”db_password” <span class="k">${</span><span class="nv">DBName</span><span class="k">}</span> &amp;gt; <span class="k">${</span><span class="nv">BackupPath</span><span class="k">}</span>”/”<span class="k">${</span><span class="nv">DBName</span><span class="k">}</span>&lt;code&gt;date <span class="s2">&quot;+%Y-%m-%d&quot;</span>&lt;/code&gt;“.sql” ;
+find <span class="k">${</span><span class="nv">BackupPath</span><span class="k">}</span>”/” -mtime +6 -exec rm <span class="o">{}</span> <span class="se">\;</span>
+</pre></div>

@@ -1,0 +1,31 @@
+<div class="highlight"><pre><span class="cp">#include “stdio.h” </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">num</span><span class="p">;</span> 
+<span class="nl">loop1:</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">Please</span> <span class="n">input</span> <span class="n">your</span> <span class="n">number</span> <span class="n">which</span> <span class="n">want</span> <span class="n">to</span> <span class="n">factorization</span><span class="o">:</span><span class="err">\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="n">num</span><span class="p">);</span> 
+  <span class="k">if</span><span class="p">(</span><span class="n">num</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> 
+  <span class="p">{</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="mi">1</span> <span class="n">cannot</span>    <span class="n">Integer</span> <span class="n">factorization</span> <span class="err">\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> 
+    <span class="k">goto</span> <span class="n">loop1</span><span class="p">;</span> 
+  <span class="p">}</span> 
+  <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span><span class="n">num</span><span class="p">)</span> 
+  <span class="p">{</span> 
+    <span class="k">if</span><span class="p">(</span> <span class="n">num</span><span class="o">%</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span> 
+    <span class="p">{</span> 
+      <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>      <span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">num</span><span class="o">!=</span><span class="n">i</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="err">”</span><span class="p">);</span> 
+      <span class="k">if</span><span class="p">(</span><span class="n">num</span><span class="o">==</span><span class="n">i</span><span class="p">)</span> 
+         <span class="k">break</span><span class="p">;</span> 
+      <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="o">/</span><span class="n">i</span><span class="p">;</span> 
+      <span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+      <span class="n">i</span><span class="o">++</span><span class="p">;</span> 
+  <span class="p">}</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="err">“\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> 
+<span class="p">}</span> 
+</pre></div>

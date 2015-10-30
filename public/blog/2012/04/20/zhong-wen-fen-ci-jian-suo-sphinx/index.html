@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>中文分词检索sphinx - adev.cn</title>
+  <meta name="author" content="李骥平">
+
+  
+  <meta name="description" content="讲述如何在Rails服务器上搭建中文搜索服务。 中文版sphinx -&gt; coreseek 官方文档 coreseek简单说就是支持中文分词的sphinx，所以选定最新beta版进行安装。 1.在centos 6.0上安装sphinx服务 1
+sudo yum -y install yum &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://irubi.github.io/blog/2012/04/20/zhong-wen-fen-ci-jian-suo-sphinx/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="adev.cn" type="application/atom+xml">
+  <link href='http://fonts.googleapis.com/css?family=Delius' rel='stylesheet' type='text/css'>
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    jQuery.noConflict(); // ender.js conflicts with jQuery
+  </script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+
+  
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40987303-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">adev.cn</a></h1>
+  
+    <h2>Stay hungry . Stay foolish</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:irubi.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">中文分词检索sphinx</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-20T11:20:00+08:00" pubdate data-updated="true">Apr 20<span>th</span>, 2012</time>
+         
+        | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>讲述如何在Rails服务器上搭建中文搜索服务。
+<!--more-->
+中文版sphinx -&gt; coreseek</p>
+
+<p><a href="http://www.coreseek.cn/docs/coreseek_4.1-sphinx_2.0.1-beta.html">官方文档</a></p>
+
+<p>coreseek简单说就是支持中文分词的sphinx，所以选定最新beta版进行安装。</p>
+
+<p>1.在centos 6.0上安装sphinx服务</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sudo yum -y install yum glibc-common build-essential libtool autoconf automake libexpat-dev
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>下载 coreseek最新版， http://www.coreseek.cn/news/14/52/
+解压之后</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">cd </span>mmseg-3.x.x
+</span><span class="line">aclocal
+</span><span class="line">libtoolize --force
+</span><span class="line">automake --add-missing
+</span><span class="line">autoconf
+</span><span class="line">autoheader
+</span><span class="line">make clean <span class="c">#此时如有错误可忽略不管</span>
+</span><span class="line">./configure --prefix<span class="o">=</span>/usr/local/mmseg3
+</span><span class="line">make
+</span><span class="line">make install
+</span><span class="line">cp -f src/*/*.h /usr/local/mmseg3/include/mmseg/
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>一定要执行以上的拷贝，否则make编译时会出错。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">sudo ln -s /usr/local/mmseg/bin/mmseg /usr/bin
+</span><span class="line">
+</span><span class="line"><span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># sh buildconf.sh </span>
+</span><span class="line">
+</span><span class="line"><span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># export LIBS=&quot;-ldl -lutil -Xlinker -export-dynamic&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># ./configure --prefix=/usr/local/coreseek --without-python --without-unixodbc --with-mysql --with-mmseg --with-mmseg-includes=/usr/local/mmseg/include/mmseg/ --with-mmseg-libs=/usr/local/mmseg/lib/</span>
+</span><span class="line">
+</span><span class="line"><span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># make &amp;&amp; make install</span>
+</span><span class="line">
+</span><span class="line"><span class="nv">$ </span>yum install mysql-devel libxml2-devel expat-devel
+</span><span class="line">
+</span><span class="line"><span class="nv">$ </span><span class="nb">cd </span>csft-3.2.14
+</span><span class="line">
+</span><span class="line"><span class="nv">$ </span>make clean
+</span><span class="line">
+</span><span class="line"><span class="nv">$ </span>./configure -prefix<span class="o">=</span>/usr/local/coreseek  --without-unixodbc --with-mmseg --with-mmseg-includes<span class="o">=</span>/usr/local/mmseg/include/mmseg/ --with-mmseg-libs<span class="o">=</span>/usr/local/mmseg/lib/ --with-mysql
+</span><span class="line"><span class="nv">$ </span>make <span class="o">&amp;&amp;</span> make install
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>需要将coreseek的命令加入path中，</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">vi ~/.bash_profile
+</span><span class="line"><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HOME</span>/bin:/usr/local/coreseek/bin/
+</span><span class="line"><span class="nb">source</span> ~/.bash_profile
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">gem install thinking-sphinx
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Hack Thinking-Sphinx:</p>
+
+<p>首先查看一下gem的安装路径</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">gem environment
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>修改thinking-sphix-gem:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">vi <span class="nv">$thinking</span>-sphinx-gem-path/lib/thinking_sphinx/configuration.rb
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">self.index_options   <span class="o">=</span> <span class="o">{</span>
+</span><span class="line">  :charset_type <span class="o">=</span>&gt; <span class="s2">&quot;zh_cn.utf-8&quot;</span>,
+</span><span class="line">  :charset_dictpath <span class="o">=</span>&gt; <span class="s2">&quot;/usr/local/mmseg/etc&quot;</span>
+</span><span class="line"><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="ubuntu">Ubuntu环境下：</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">apt-get install make gcc g++ automake libtool mysql-client libmysqlclient15-dev   libxml2-dev libexpat1-dev
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>下载最新版</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line"><span class="nb">cd</span> ~
+</span><span class="line">wget http://www.wapm.cn/uploads/csft/4.0/coreseek-4.1-beta.tar.gz
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>解压</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">tar -zxvf coreseek-4.1-beta.tar.gz
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>安装</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">李骥平</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-20T11:20:00+08:00" pubdate data-updated="true">Apr 20<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/zhong-wen-fen-ci/'>中文分词</a>, <a class='category' href='/blog/categories/sou-suo-yin-qing/'>搜索引擎</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/03/10/sublime-idean-zhuang-shi-yong-jie-shao/" title="Previous Post: sublime IDE安装使用介绍">&laquo; sublime IDE安装使用介绍</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/11/23/macchang-yong-ruan-jian-lie-biao/" title="Next Post: mac常用软件列表">mac常用软件列表 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"irubi"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/10/30/zhong-xin-bu-shu-octopress-blog/">重新部署octopress blog</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/">Rails操作Access数据库(mdb)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/24/nei-wang-windows-serverbu-shu-railsying-yong/">内网windows server部署rails应用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/16/macshang-cha-zhao-yi-ji-yi-de-wifimi-ma/">mac上查找已记忆的wifi密码</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/16/insert-syntax-highlight-code-into-keynote/">Insert syntax highlight code into keynote</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 李骥平
+</p>
+
+</footer>
+  
+
+
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script>
+<!-- 
+ -->
+<!-- 
+ -->
+<!-- 
+ -->
+
+
+
+</body>
+</html>

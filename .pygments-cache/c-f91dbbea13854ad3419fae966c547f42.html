@@ -1,0 +1,36 @@
+<div class="highlight"><pre><span class="cp">#include “stdio.h” </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">num1</span><span class="p">,</span><span class="n">num2</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">temp_num</span><span class="p">;</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">Please</span> <span class="n">input</span> <span class="n">num1</span><span class="p">,</span><span class="n">num2</span><span class="o">:</span><span class="err">”</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span><span class="p">,</span><span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="n">num1</span><span class="p">,</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="n">num2</span><span class="p">);</span> 
+  <span class="k">if</span><span class="p">(</span><span class="n">num1</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">num2</span><span class="p">)</span> 
+  <span class="p">{</span> 
+    <span class="n">temp_num</span><span class="o">=</span><span class="n">num1</span><span class="p">;</span> 
+    <span class="n">num1</span><span class="o">=</span><span class="n">num2</span><span class="p">;</span> 
+    <span class="n">num2</span><span class="o">=</span><span class="n">temp_num</span><span class="p">;</span> 
+  <span class="p">}</span> <span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="k">if</span><span class="p">(</span><span class="n">num2</span><span class="o">%</span><span class="n">num1</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;The greatest common divisor is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">num1</span><span class="p">);</span>    <span class="k">else</span>    <span class="p">{</span> 
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">num1</span><span class="p">;</span><span class="n">i</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">--</span><span class="p">)</span> 
+    <span class="k">if</span><span class="p">(</span> <span class="p">(</span><span class="n">num1</span><span class="o">%</span><span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="p">(</span><span class="n">num2</span><span class="o">%</span><span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="p">)</span> 
+    <span class="p">{</span> 
+     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;The greatest common divisor is %d    </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">);</span> 
+     <span class="k">break</span><span class="p">;</span> 
+    <span class="p">}</span>    <span class="p">}</span> 
+<span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">if</span><span class="p">(</span><span class="n">num2</span><span class="o">%</span><span class="n">num1</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">The</span>    <span class="n">least</span> <span class="n">common</span> <span class="n">multiple</span> <span class="n">is</span> <span class="o">%</span><span class="n">d</span><span class="err">\</span><span class="n">n</span><span class="err">”</span><span class="p">,</span><span class="n">num2</span><span class="p">);</span> 
+  <span class="k">else</span> 
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="n">num2</span><span class="p">;</span><span class="n">j</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">num1</span><span class="o">*</span><span class="n">num2</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> 
+      <span class="k">if</span><span class="p">(</span> <span class="n">j</span><span class="o">%</span><span class="n">num1</span><span class="o">==</span><span class="mi">0</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">j</span><span class="o">%</span><span class="n">num2</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+      <span class="p">{</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">The</span> <span class="n">least</span> <span class="n">common</span> <span class="n">multiple</span> <span class="n">is</span> <span class="o">%</span><span class="n">d</span><span class="err">\</span><span class="n">n</span><span class="err">”</span><span class="p">,</span><span class="n">j</span><span class="p">);</span> 
+        <span class="k">break</span><span class="p">;</span> 
+      <span class="p">}</span> <span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span> 
+</pre></div>

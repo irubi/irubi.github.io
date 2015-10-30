@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2015-10-30T21:43:10+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Lion 上配置 ROR 环境]]></title>
+    <link href="http://irubi.github.io/blog/2012/02/19/lion-shang-pei-zhi-ror-huan-jing/"/>
+    <updated>2012-02-19T11:52:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2012/02/19/lion-shang-pei-zhi-ror-huan-jing</id>
+    <content type="html"><![CDATA[<!--more-->
+
+<ul>
+  <li>
+    <p>安装<a href="http://totalterminal.binaryage.com">total terminal</a>和<a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a>
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mate ~/.zshrc
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+    <p>修改theme参数：
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">ZSH_THEME</span><span class="o">=</span>”robbyrussell”
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+    <p>打开totalterminal preference， 设置homebrew 为default theme, 然后修改其配置选项如图：</p>
+
+    <p><img src="http://pic.yupoo.com/irubi_v/CRLEVIMb/Bask3.png" /></p>
+  </li>
+  <li>
+    <p>安装、配置 <a href="http://help.github.com/mac-set-up-git/">git</a></p>
+  </li>
+  <li>
+    <p>安装<a href="https://github.com/mxcl/homebrew">homebrew</a></p>
+  </li>
+  <li>
+    <p>安装 <a href="http://beginrescueend.com/rvm/install/">rvm</a></p>
+  </li>
+</ul>
+
+<p>然后执行</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">source</span> ~/.zshrc
+</span><span class='line'><span class="nb">type </span>rvm | head -1
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>rvm 安装成功</p>
+
+<p>如果在下面的安装过程中出现错误，请确保已经安装了xcode command line tools。</p>
+
+<ul>
+  <li>
+    <p>安装ruby</p>
+
+    <p>可以先看一下
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rvm list known
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+安装1.9.3</p>
+  </li>
+</ul>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rvm install 1.9.3
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+安装完成之后
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rvm use 1.9.3 –default
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>看看irb是否支持中文, 如果不支持，在~/.zshrc中加入</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">LC_ALL</span><span class="o">=</span>en_US.UTF-8
+</span><span class='line'><span class="nb">export </span><span class="nv">LANG</span><span class="o">=</span>en_US.UTF-8
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>安装完成</p>
+]]></content>
+  </entry>
+  
+</feed>

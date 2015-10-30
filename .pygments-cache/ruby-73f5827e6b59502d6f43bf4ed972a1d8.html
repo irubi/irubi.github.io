@@ -1,0 +1,33 @@
+<div class="highlight"><pre><span class="c1">##3个月大开始生兔子是fib序列。</span>
+<span class="k">class</span> <span class="nc">Rabbit</span> 
+    <span class="vc">@@count</span><span class="o">=</span><span class="mi">0</span> 
+    <span class="kp">attr_accessor</span> <span class="ss">:age</span> 
+    <span class="k">def</span> <span class="nf">initialize</span> 
+        <span class="vi">@age</span><span class="o">=</span><span class="mi">0</span> 
+        <span class="vc">@@count</span><span class="o">+=</span><span class="mi">1</span> 
+    <span class="k">end</span> <span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;pre&gt;&lt;code&gt;def increment </span>
+<span class="sr">    @age+=1 </span>
+<span class="sr">end </span>
+
+<span class="sr">def self.quantity </span>
+<span class="sr">    @@count </span>
+<span class="sr">end  end </span>
+<span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+
+<span class="sr">&lt;p&gt;first_rabbit=Rabbit.new </span>
+<span class="sr">rabbits=Array.new </span>
+<span class="sr">rabbits«first_rabit </span>
+<span class="sr">puts “Input the months:” </span>
+<span class="sr">n=gets.chomp.to_i </span>
+<span class="sr">n.times do |month| </span>
+<span class="sr">    puts “</span><span class="si">#{</span><span class="n">month</span><span class="si">}</span><span class="sr"> – </span><span class="si">#{</span><span class="no">Rabbit</span><span class="o">.</span><span class="n">quantity</span><span class="o">*</span><span class="mi">2</span><span class="si">}</span><span class="sr"> rabbits” </span>
+<span class="sr">    rabits.each do |rabbit| </span>
+<span class="sr">        rabbit.increment </span>
+<span class="sr">        if rabbit.age&amp;gt;=3 </span>
+<span class="sr">            rabbits«Rabit.new </span>
+<span class="sr">        end </span>
+<span class="sr">    end </span>
+<span class="sr">end </span>
+</pre></div>

@@ -1,0 +1,27 @@
+<div class="highlight"><pre><span class="cp">#include &quot;stdio.h&quot; </span>
+<span class="cp">#include &quot;math.h&quot; </span>
+ 
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">month</span><span class="p">;</span> 
+  <span class="c1">//long int num=1;                            //the number of rabbits </span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>                                    <span class="c1">//loop variable </span>
+  <span class="kt">int</span> <span class="n">f1</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">f2</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Which month would you want to konw how many rabbits ?&quot;</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">month</span><span class="p">);</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;1----1 pair of rabbit</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;2----1 pairs of rabbits</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> 
+        <span class="n">i</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span> 
+  <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">month</span><span class="p">)</span> 
+  <span class="p">{</span> 
+     
+    <span class="n">f1</span><span class="o">=</span><span class="n">f1</span><span class="o">+</span><span class="n">f2</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d----%d pairs of rabbits</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">f1</span><span class="p">);</span> 
+    <span class="n">f2</span><span class="o">=</span><span class="n">f1</span><span class="o">+</span><span class="n">f2</span><span class="p">;</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d----%d pairs of rabbits</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="o">++</span><span class="n">i</span><span class="p">,</span><span class="n">f2</span><span class="p">);</span> 
+    <span class="n">i</span><span class="o">++</span><span class="p">;</span> 
+  <span class="p">}</span> 
+  <span class="c1">//printf(&quot;\nThe %d month has %d number rabbits.\n&quot;,month,num);         </span>
+<span class="p">}</span> 
+</pre></div>

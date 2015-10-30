@@ -1,0 +1,22 @@
+<div class="highlight"><pre><span class="cp">#include &quot;stdio.h&quot; </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">,</span><span class="n">day</span><span class="p">;</span> 
+  <span class="kt">int</span>    <span class="n">i</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">total</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mi">31</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">};</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Please input the date of today:(yyyy,mm,dd)&quot;</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d,%d,%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">year</span><span class="p">,</span><span class="o">&amp;</span><span class="n">month</span><span class="p">,</span><span class="o">&amp;</span><span class="n">day</span><span class="p">);</span> 
+  <span class="k">if</span><span class="p">(</span> <span class="n">year</span><span class="o">%</span><span class="mi">400</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> 
+            <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">29</span><span class="p">;</span> 
+  <span class="k">else</span>    
+     <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">28</span><span class="p">;</span> 
+ 
+        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">month</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+    <span class="n">total</span><span class="o">+=</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> 
+  <span class="n">total</span><span class="o">+=</span><span class="n">day</span><span class="p">;</span> 
+        
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Today is number %d day in this year.&quot;</span><span class="p">,</span><span class="n">total</span><span class="p">);</span>         
+ 
+<span class="p">}</span> 
+</pre></div>

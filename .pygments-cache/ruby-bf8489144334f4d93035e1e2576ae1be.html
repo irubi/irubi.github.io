@@ -1,0 +1,21 @@
+<div class="highlight"><pre><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="no">New</span> <span class="n">post</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+<span class="sr">&lt;% ab_test(&quot;create_post_intro&quot;, &quot;plan_1&quot;, &quot;plan_2&quot;, &quot;plan_3&quot;) do |plan|%&gt;</span>
+<span class="sr">  &lt;% case plan %&gt;</span>
+<span class="sr">  &lt;% when &quot;plan_1&quot;%&gt;</span>
+<span class="sr">     &lt;div id=&quot;plan_1&quot;&gt;</span>
+<span class="sr">        11..</span>
+<span class="sr">     &lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="sx">% when </span><span class="s2">&quot;plan_2&quot;</span><span class="sx">%&gt;</span>
+<span class="sx">     &lt;div id=&quot;plan_2&quot;&gt;</span>
+        <span class="mi">22</span><span class="o">.</span><span class="n">.</span>
+     <span class="o">&lt;</span><span class="sr">/div&gt;</span>
+<span class="sr">  &lt;% when &quot;plan_3&quot;%&gt;</span>
+<span class="sr">     &lt;div id=&quot;plan_3&quot;&gt;</span>
+<span class="sr">        33..</span>
+<span class="sr">     &lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="sx">% end %&gt;</span>
+<span class="sx">&lt;% end %&gt;</span>
+<span class="o">&lt;</span><span class="sx">%= render &#39;form&#39; %&gt;</span>
+
+<span class="sx">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;Back&#39;</span><span class="p">,</span> <span class="n">posts_path</span> <span class="o">%&gt;</span>
+</pre></div>

@@ -1,0 +1,18 @@
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">stairs</span><span class="p">(</span><span class="n">max</span><span class="p">)</span> 
+    <span class="n">f</span><span class="o">=</span><span class="n">max</span> 
+    <span class="k">while</span> <span class="n">f!</span><span class="o">=</span><span class="mi">0</span>     
+        <span class="k">yield</span> <span class="n">f</span> 
+        <span class="n">f</span><span class="o">-=</span><span class="mi">1</span> 
+    <span class="k">end</span> 
+<span class="k">end</span> 
+
+<span class="mi">10</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span><span class="nb">print</span> <span class="s2">&quot;     &quot;</span><span class="p">}</span> 
+<span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\1</span><span class="s2">    </span><span class="se">\1\n</span><span class="s2">&quot;</span> 
+<span class="n">stairs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>    
+    <span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>    
+        <span class="nb">print</span> <span class="s2">&quot;     &quot;</span> 
+    <span class="k">end</span> 
+    <span class="nb">print</span> <span class="s2">&quot;_|&quot;</span> 
+<span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> 
+<span class="k">end</span>    
+</pre></div>

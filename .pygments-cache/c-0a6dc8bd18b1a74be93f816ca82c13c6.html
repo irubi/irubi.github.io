@@ -1,0 +1,31 @@
+<div class="highlight"><pre><span class="cp">#include &quot;stdio.h&quot; </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+  <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span> 
+  <span class="kt">int</span> <span class="n">num</span><span class="p">;</span> 
+<span class="nl">loop1:</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Please input your number which want to factorization:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> 
+  <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">num</span><span class="p">);</span> 
+  <span class="k">if</span><span class="p">(</span><span class="n">num</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> 
+  <span class="p">{</span> 
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;1 cannot    Integer factorization </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> 
+    <span class="k">goto</span> <span class="n">loop1</span><span class="p">;</span> 
+  <span class="p">}</span> 
+  <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">num</span><span class="p">)</span> 
+  <span class="p">{</span> 
+    <span class="k">if</span><span class="p">(</span> <span class="n">num</span><span class="o">%</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span> 
+    <span class="p">{</span> 
+      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>        
+      <span class="k">if</span><span class="p">(</span><span class="n">num</span><span class="o">!=</span><span class="n">i</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">);</span> 
+      <span class="k">if</span><span class="p">(</span><span class="n">num</span><span class="o">==</span><span class="n">i</span><span class="p">)</span> 
+         <span class="k">break</span><span class="p">;</span> 
+      <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="o">/</span><span class="n">i</span><span class="p">;</span> 
+      <span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">else</span> 
+      <span class="n">i</span><span class="o">++</span><span class="p">;</span> 
+  <span class="p">}</span> 
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> 
+<span class="p">}</span> 
+</pre></div>

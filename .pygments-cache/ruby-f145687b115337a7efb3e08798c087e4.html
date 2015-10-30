@@ -1,0 +1,24 @@
+<div class="highlight"><pre>  <span class="c1">#!/usr/bin/env ruby</span>
+  <span class="nb">require</span> <span class="err">‘</span><span class="n">rubygems</span><span class="err">’</span>
+  <span class="nb">require</span> <span class="err">‘</span><span class="n">net</span><span class="o">/</span><span class="n">ssh</span><span class="err">’</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;class Sms &amp;lt; ActiveRecord::Base&lt;br /</span><span class="o">&gt;</span>
+    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+      <span class="p">{</span> <span class="ss">:id</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">:phones</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">contact</span><span class="p">,</span> <span class="ss">:msg</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="ss">:sent_at</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">sent_at</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">Y</span><span class="o">/%</span><span class="n">m</span><span class="o">/%</span><span class="n">d</span> <span class="o">%</span><span class="ss">H</span><span class="p">:</span><span class="o">%</span><span class="ss">M</span><span class="p">:</span><span class="o">%</span><span class="n">S</span><span class="err">”</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;pre&gt;&lt;code&gt;def send_msg</span>
+<span class="sr">  host = &#39;192.192.100.11&#39;</span>
+<span class="sr">  user = &#39;root&#39;</span>
+<span class="sr">  sms_json_url = &#39;&#39;</span>
+<span class="sr">  if Rails.env == &#39;development&#39;</span>
+<span class="sr">    sms_json_url = &#39;http:/</span><span class="o">/</span><span class="mi">192</span><span class="o">.</span><span class="mi">192</span><span class="o">.</span><span class="mi">102</span><span class="o">.</span><span class="mi">97</span><span class="p">:</span><span class="mi">3000</span><span class="s1">&#39; + Rails.application.routes.url_helpers.admin_sms_path(self) + &#39;</span><span class="o">.</span><span class="n">json</span><span class="s1">&#39;</span>
+<span class="s1">  elsif Rails.env == &#39;</span><span class="n">production</span><span class="s1">&#39;</span>
+<span class="s1">    sms_json_url = &#39;</span><span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="mi">192</span><span class="o">.</span><span class="mi">192</span><span class="o">.</span><span class="mi">100</span><span class="o">.</span><span class="mi">22</span><span class="s1">&#39; + Rails.application.routes.url_helpers.admin_sms_path(self) + &#39;</span><span class="o">.</span><span class="n">json</span><span class="err">&#39;</span>
+  <span class="k">end</span>
+  
+  <span class="ss">Net</span><span class="p">:</span><span class="ss">:SSH</span><span class="o">.</span><span class="n">start</span><span class="p">(</span> <span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="k">do</span><span class="o">|</span><span class="n">ssh</span><span class="o">|</span>
+    <span class="n">ssh</span><span class="o">.</span><span class="n">exec!</span><span class="p">(</span><span class="s2">&quot;cmd /c c:/ruby200/bin/ruby d:/website/insertsms.rb </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">sms_json_url</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>   <span class="k">end</span> 
+</pre></div>

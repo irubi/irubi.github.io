@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 中文分词 | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/zhong-wen-fen-ci/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2015-10-30T21:43:10+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[中文分词检索sphinx]]></title>
+    <link href="http://irubi.github.io/blog/2012/04/20/zhong-wen-fen-ci-jian-suo-sphinx/"/>
+    <updated>2012-04-20T11:20:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2012/04/20/zhong-wen-fen-ci-jian-suo-sphinx</id>
+    <content type="html"><![CDATA[<p>讲述如何在Rails服务器上搭建中文搜索服务。
+<!--more-->
+中文版sphinx -&gt; coreseek</p>
+
+<p><a href="http://www.coreseek.cn/docs/coreseek_4.1-sphinx_2.0.1-beta.html">官方文档</a></p>
+
+<p>coreseek简单说就是支持中文分词的sphinx，所以选定最新beta版进行安装。</p>
+
+<p>1.在centos 6.0上安装sphinx服务</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo yum -y install yum glibc-common build-essential libtool autoconf automake libexpat-dev
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>下载 coreseek最新版， http://www.coreseek.cn/news/14/52/
+解压之后</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd </span>mmseg-3.x.x
+</span><span class='line'>aclocal
+</span><span class='line'>libtoolize –force
+</span><span class='line'>automake –add-missing
+</span><span class='line'>autoconf
+</span><span class='line'>autoheader
+</span><span class='line'>make clean <span class="c">#此时如有错误可忽略不管</span>
+</span><span class='line'>./configure –prefix<span class="o">=</span>/usr/local/mmseg3
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'>cp -f src/&lt;em&gt;/&lt;/em&gt;.h /usr/local/mmseg3/include/mmseg/
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>一定要执行以上的拷贝，否则make编译时会出错。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo ln -s /usr/local/mmseg/bin/mmseg /usr/bin&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># sh buildconf.sh &lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># export LIBS=”-ldl -lutil -Xlinker -export-dynamic”&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># ./configure –prefix=/usr/local/coreseek –without-python –without-unixodbc –with-mysql –with-mmseg –with-mmseg-includes=/usr/local/mmseg/include/mmseg/ –with-mmseg-libs=/usr/local/mmseg/lib/&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="o">[</span>root@localhost csft-4.1<span class="o">]</span><span class="c"># make &amp;amp;&amp;amp; make install&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span>yum install mysql-devel libxml2-devel expat-devel&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span><span class="nb">cd </span>csft-3.2.14&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span>make clean&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;<span class="nv">$ </span>./configure -prefix<span class="o">=</span>/usr/local/coreseek  –without-unixodbc –with-mmseg –with-mmseg-includes<span class="o">=</span>/usr/local/mmseg/include/mmseg/ –with-mmseg-libs<span class="o">=</span>/usr/local/mmseg/lib/ –with-mysql
+</span><span class='line'><span class="nv">$ </span>make &amp;amp;&amp;amp; make install
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>需要将coreseek的命令加入path中，</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vi ~/.bash_profile
+</span><span class='line'><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HOME</span>/bin:/usr/local/coreseek/bin/
+</span><span class='line'><span class="nb">source</span> ~/.bash_profile
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem install thinking-sphinx
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Hack Thinking-Sphinx:</p>
+
+<p>首先查看一下gem的安装路径
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem environment
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>修改thinking-sphix-gem:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vi <span class="nv">$thinking</span>-sphinx-gem-path/lib/thinking_sphinx/configuration.rb
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>self.index_options   <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  :charset_type <span class="o">=</span>&amp;gt; “zh_cn.utf-8”,
+</span><span class='line'>  :charset_dictpath <span class="o">=</span>&amp;gt; “/usr/local/mmseg/etc”
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4 id="ubuntu">Ubuntu环境下：</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>apt-get install make gcc g++ automake libtool mysql-client libmysqlclient15-dev   libxml2-dev libexpat1-dev
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>下载最新版
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> ~
+</span><span class='line'>wget http://www.wapm.cn/uploads/csft/4.0/coreseek-4.1-beta.tar.gz
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+解压
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>tar -zxvf coreseek-4.1-beta.tar.gz
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>安装</p>
+
+]]></content>
+  </entry>
+  
+</feed>

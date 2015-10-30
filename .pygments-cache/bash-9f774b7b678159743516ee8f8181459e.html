@@ -1,0 +1,18 @@
+<div class="highlight"><pre><span class="c"># encoding: utf-8</span>
+require <span class="s1">&#39;pathname&#39;</span> 
+
+<span class="nv">dir</span> <span class="o">=</span> <span class="s1">&#39;/Volumes/HD/music/1212&#39;</span>
+
+<span class="nv">files</span> <span class="o">=</span> Dir.entries<span class="o">(</span>dir<span class="o">)</span>
+<span class="nv">reg</span> <span class="o">=</span> /mp3/
+files.each <span class="k">do</span> |filename|
+  <span class="k">if </span>filename.match<span class="o">(</span>reg<span class="o">)</span>
+    <span class="nv">file</span> <span class="o">=</span> dir + <span class="s1">&#39;/&#39;</span> + filename
+	<span class="nv">matched_str</span> <span class="o">=</span> reg.match<span class="o">(</span>filename<span class="o">)</span>
+    <span class="nv">new_name</span> <span class="o">=</span> file.gsub<span class="o">(</span>/<span class="se">\s</span>|<span class="se">\&#39;</span>|-/<span class="o">)</span> <span class="o">{</span>|m| <span class="s1">&#39;\\&#39;</span> + m<span class="o">}</span>
+	File.rename<span class="o">(</span>file, file.strip<span class="o">)</span>
+    <span class="nv">result</span> <span class="o">=</span> <span class="sb">`</span>yes | mp3tagiconv <span class="c">#{new_name}`</span>
+	puts result
+  end
+end
+</pre></div>

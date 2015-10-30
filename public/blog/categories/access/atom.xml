@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: access | adev.cn]]></title>
+  <link href="http://irubi.github.io/blog/categories/access/atom.xml" rel="self"/>
+  <link href="http://irubi.github.io/"/>
+  <updated>2015-10-30T21:43:10+08:00</updated>
+  <id>http://irubi.github.io/</id>
+  <author>
+    <name><![CDATA[李骥平]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails操作Access数据库(mdb)]]></title>
+    <link href="http://irubi.github.io/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb/"/>
+    <updated>2014-02-13T15:25:00+08:00</updated>
+    <id>http://irubi.github.io/blog/2014/02/13/railscao-zuo-accessshu-ju-ku-mdb</id>
+    <content type="html"><![CDATA[<p>应用场景：</p>
+
+<ul>
+  <li>
+    <p><code>windows</code>上跑着一个短信猫的服务，这个程序二次开发是通过修改服务所使用的一个<code>access</code>数据库，插入记录即可实现发短信的功能。</p>
+  </li>
+  <li>
+    <p><code>linux上</code>是<code>Rails</code>程序，开发了一个通讯录和发短信的功能，发短信时需要在<code>create</code>短信之后触发修改<code>access</code>数据库的操作。</p>
+  </li>
+</ul>
+
+<p>但是<code>Rails</code>连接<code>windows</code>下的<code>access</code>(mdb数据库)比较麻烦，需要调用<code>mdb-tools</code>之类的东西，而且对中文支持可能会出现问题。</p>
+
+<p>所以思路是这样的，在<code>windows</code>上安装<code>ssh server</code>，用<code>freesshd.exe</code>(开源免费)。安装好之后建立一个<code>ssh</code>用户(如root),并且将<code>linux</code>服务器上的<code>ssh\id_rsa.pub</code>内容复制到<code>c:/freesshd/root</code>文件中，如果还要加入其他ssh（root）用户，也可以将<code>id_rsa.pub</code>内容复制进去。</p>
+
+<p>建立<code>ssh</code>通道之后，就可以用<code>ruby</code>执行<code>ssh</code>远程命令来操纵<code>windows</code>来执行命令操作<code>access</code>数据库。在<code>windows</code>上建立脚本如下：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>insertsms.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>  <span class="c1"># encoding: utf-8</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">rubygems</span><span class="err">’</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">sequel</span><span class="err">’</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">“</span><span class="n">net</span><span class="o">/</span><span class="n">http</span><span class="err">”</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">“</span><span class="n">uri</span><span class="err">”</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">json</span><span class="err">’</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;uri = URI.parse(ARGV[0])</span>
+</span><span class='line'><span class="sr">  response = JSON.parse(Net::HTTP.get_response(uri).body)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="nb">puts</span> <span class="n">uri</span>
+</span><span class='line'>  <span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="o">.</span><span class="n">ado</span><span class="p">(</span><span class="ss">:conn_string</span><span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span><span class="err">’</span><span class="no">Provider</span><span class="o">=</span><span class="no">Microsoft</span><span class="o">.</span><span class="n">Jet</span><span class="o">.</span><span class="n">OLEDB</span><span class="o">.</span><span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span><span class="no">Data</span> <span class="no">Source</span><span class="o">=</span><span class="ss">D</span><span class="p">:\</span><span class="n">website</span><span class="p">\</span><span class="n">db</span><span class="p">\</span><span class="n">smsdata</span><span class="o">.</span><span class="n">mdb</span><span class="err">’</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">items</span> <span class="o">=</span> <span class="no">DB</span><span class="o">[</span><span class="ss">:OutBox</span><span class="o">]</span> <span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;phones = response[“phones”].split(‘,’)</span>
+</span><span class='line'><span class="sr">  msg = response[“msg”].dup.force_encoding(“utf-8”)</span>
+</span><span class='line'><span class="sr">  sent_at = response[“sent_at”]&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">phones</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span><span class="o">|</span><span class="n">phone</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="ss">:Mbno</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">phone</span><span class="p">,</span> <span class="ss">:Msg</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">:SendTime</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">sent_at</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>linux服务器 Rails程序：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>model/sms.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">rubygems</span><span class="err">’</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="err">‘</span><span class="n">net</span><span class="o">/</span><span class="n">ssh</span><span class="err">’</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;class Sms &amp;lt; ActiveRecord::Base&lt;br /</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+</span><span class='line'>      <span class="p">{</span> <span class="ss">:id</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">:phones</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">contact</span><span class="p">,</span> <span class="ss">:msg</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="ss">:sent_at</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="nb">self</span><span class="o">.</span><span class="n">sent_at</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">Y</span><span class="o">/%</span><span class="n">m</span><span class="o">/%</span><span class="n">d</span> <span class="o">%</span><span class="ss">H</span><span class="p">:</span><span class="o">%</span><span class="ss">M</span><span class="p">:</span><span class="o">%</span><span class="n">S</span><span class="err">”</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;def send_msg</span>
+</span><span class='line'><span class="sr">  host = &#39;192.192.100.11&#39;</span>
+</span><span class='line'><span class="sr">  user = &#39;root&#39;</span>
+</span><span class='line'><span class="sr">  sms_json_url = &#39;&#39;</span>
+</span><span class='line'><span class="sr">  if Rails.env == &#39;development&#39;</span>
+</span><span class='line'><span class="sr">    sms_json_url = &#39;http:/</span><span class="o">/</span><span class="mi">192</span><span class="o">.</span><span class="mi">192</span><span class="o">.</span><span class="mi">102</span><span class="o">.</span><span class="mi">97</span><span class="p">:</span><span class="mi">3000</span><span class="s1">&#39; + Rails.application.routes.url_helpers.admin_sms_path(self) + &#39;</span><span class="o">.</span><span class="n">json</span><span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">  elsif Rails.env == &#39;</span><span class="n">production</span><span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">    sms_json_url = &#39;</span><span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="mi">192</span><span class="o">.</span><span class="mi">192</span><span class="o">.</span><span class="mi">100</span><span class="o">.</span><span class="mi">22</span><span class="s1">&#39; + Rails.application.routes.url_helpers.admin_sms_path(self) + &#39;</span><span class="o">.</span><span class="n">json</span><span class="err">&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="ss">Net</span><span class="p">:</span><span class="ss">:SSH</span><span class="o">.</span><span class="n">start</span><span class="p">(</span> <span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="k">do</span><span class="o">|</span><span class="n">ssh</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">ssh</span><span class="o">.</span><span class="n">exec!</span><span class="p">(</span><span class="s2">&quot;cmd /c c:/ruby200/bin/ruby d:/website/insertsms.rb </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">sms_json_url</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>   <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</code></pre>
+
+<p>因为如果从<code>Rails</code>调用<code>windows</code>上的<code>insertsms.rb</code>这段<code>script</code>如果传中文参数时，会有乱码问题出现，所以将插入短信所需数据参数以<code>json</code>的方式提供，直接让<code>insertsms.rb</code>去读取，将数据处理之后插入<code>access</code>数据库即可。</p>
+
+<p>通信过程可能会耗费时间，造成响应时间长，所以需要引入<code>delay_job</code>来提升用户体验。</p>
+]]></content>
+  </entry>
+  
+</feed>

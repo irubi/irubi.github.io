@@ -1,0 +1,40 @@
+<div class="highlight"><pre><span class="cp">#include “stdio.h” </span>
+<span class="cp">#define MAX 3 </span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span> 
+ <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">;</span> 
+ <span class="kt">int</span> <span class="n">num</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+ <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span> 
+ <span class="kt">int</span> <span class="n">newline</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> 
+ <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+ <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span><span class="n">MAX</span><span class="p">)</span> 
+ <span class="p">{</span> 
+     <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">i</span><span class="p">;</span> 
+     <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+     <span class="k">while</span><span class="p">(</span><span class="n">j</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span><span class="n">MAX</span><span class="p">)</span> 
+         <span class="p">{</span> 
+        <span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">==</span><span class="n">i</span><span class="p">)</span>     <span class="p">{</span><span class="n">j</span><span class="o">++</span><span class="p">;</span> <span class="k">continue</span><span class="p">;}</span> 
+        <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="p">;</span> 
+        <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+        <span class="k">while</span><span class="p">(</span><span class="n">k</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span><span class="n">MAX</span><span class="p">)</span> 
+         <span class="p">{</span> 
+         <span class="k">if</span><span class="p">(</span><span class="n">k</span><span class="o">==</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span><span class="n">k</span><span class="o">++</span><span class="p">;</span><span class="k">continue</span><span class="p">;}</span> 
+         <span class="k">if</span><span class="p">(</span><span class="n">k</span><span class="o">==</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span><span class="n">k</span><span class="o">++</span><span class="p">;</span><span class="k">continue</span><span class="p">;}</span> 
+            <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">k</span><span class="p">;</span> 
+            <span class="n">k</span><span class="o">++</span><span class="p">;</span> 
+            <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">temp</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">temp</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="n">temp</span><span class="o">++</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="n">a</span><span class="p">[</span><span class="n">temp</span><span class="p">]);</span> 
+     <span class="n">printf</span><span class="p">(</span><span class="err">“</span>    <span class="err">“</span><span class="p">);</span> 
+            <span class="n">num</span><span class="o">++</span><span class="p">;</span> 
+            <span class="n">newline</span><span class="o">++</span><span class="p">;</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">newline</span><span class="o">%</span><span class="mi">10</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> 
+                <span class="n">printf</span><span class="p">(</span><span class="err">“\</span><span class="n">n</span><span class="err">”</span><span class="p">);</span> 
+         <span class="p">}</span><span class="c1">//while k </span>
+        <span class="n">j</span><span class="o">++</span><span class="p">;</span> 
+     <span class="p">}</span><span class="c1">//while j </span>
+             <span class="n">i</span><span class="o">++</span><span class="p">;</span> 
+        <span class="p">}</span><span class="c1">//while i &lt;/p&gt;</span>
+
+<span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">printf</span><span class="p">(</span><span class="err">“\</span><span class="n">nTotal</span> <span class="n">number</span> <span class="n">is</span> <span class="o">%</span><span class="n">d</span><span class="err">”</span><span class="p">,</span><span class="n">num</span><span class="p">);</span> 
+ <span class="p">}</span> 
+</pre></div>

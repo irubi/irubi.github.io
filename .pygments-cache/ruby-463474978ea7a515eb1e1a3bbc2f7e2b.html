@@ -1,0 +1,23 @@
+<div class="highlight"><pre>  <span class="c1">#!/usr/bin/env ruby</span>
+  <span class="c1"># encoding: utf-8</span>
+  <span class="nb">require</span> <span class="err">‘</span><span class="n">rubygems</span><span class="err">’</span>
+  <span class="nb">require</span> <span class="err">‘</span><span class="n">sequel</span><span class="err">’</span>
+  <span class="nb">require</span> <span class="err">“</span><span class="n">net</span><span class="o">/</span><span class="n">http</span><span class="err">”</span>
+  <span class="nb">require</span> <span class="err">“</span><span class="n">uri</span><span class="err">”</span>
+  <span class="nb">require</span> <span class="err">‘</span><span class="n">json</span><span class="err">’</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;uri = URI.parse(ARGV[0])</span>
+<span class="sr">  response = JSON.parse(Net::HTTP.get_response(uri).body)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="nb">puts</span> <span class="n">uri</span>
+  <span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="o">.</span><span class="n">ado</span><span class="p">(</span><span class="ss">:conn_string</span><span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span><span class="err">’</span><span class="no">Provider</span><span class="o">=</span><span class="no">Microsoft</span><span class="o">.</span><span class="n">Jet</span><span class="o">.</span><span class="n">OLEDB</span><span class="o">.</span><span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span><span class="no">Data</span> <span class="no">Source</span><span class="o">=</span><span class="ss">D</span><span class="p">:\</span><span class="n">website</span><span class="p">\</span><span class="n">db</span><span class="p">\</span><span class="n">smsdata</span><span class="o">.</span><span class="n">mdb</span><span class="err">’</span><span class="p">)</span>
+  <span class="n">items</span> <span class="o">=</span> <span class="no">DB</span><span class="o">[</span><span class="ss">:OutBox</span><span class="o">]</span> <span class="o">&lt;</span><span class="sr">/p&gt;</span>
+
+<span class="sr">&lt;p&gt;phones = response[“phones”].split(‘,’)</span>
+<span class="sr">  msg = response[“msg”].dup.force_encoding(“utf-8”)</span>
+<span class="sr">  sent_at = response[“sent_at”]&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="n">phones</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span><span class="o">|</span><span class="n">phone</span><span class="o">|</span>
+    <span class="n">items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="ss">:Mbno</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">phone</span><span class="p">,</span> <span class="ss">:Msg</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">:SendTime</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">sent_at</span><span class="p">)</span>
+  <span class="k">end</span>
+</pre></div>

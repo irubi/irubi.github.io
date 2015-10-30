@@ -1,0 +1,29 @@
+<div class="highlight"><pre><span class="nb">p</span> <span class="s2">&quot;----loGin Google----&quot;</span>
+<span class="ss">Garb</span><span class="p">:</span><span class="ss">:Session</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="s1">&#39;google account&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">)</span>
+<span class="nb">p</span> <span class="s2">&quot;----Get Profile----&quot;</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="ss">Garb</span><span class="p">:</span><span class="ss">:Profile</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="s2">&quot;UA-XXXXXXX-X&quot;</span><span class="p">)</span>
+<span class="nb">p</span> <span class="n">profile</span>
+<span class="nb">p</span> <span class="s2">&quot;-----Get unique PV----&quot;</span>
+
+<span class="n">start_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span> <span class="o">-</span> <span class="mi">30</span>
+<span class="n">end_date</span> <span class="o">=</span> <span class="no">Date</span><span class="o">.</span><span class="n">today</span>
+
+<span class="nb">p</span> <span class="s2">&quot;-----Define a specific page----&quot;</span>
+<span class="n">project_id</span> <span class="o">=</span> <span class="mi">123456</span>
+
+<span class="nb">p</span> <span class="s2">&quot;-----fetch the page (uri: /projects/12345) unique pageview----&quot;</span>
+
+<span class="p">(</span><span class="n">start_date</span><span class="o">.</span><span class="n">.end_date</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">date</span><span class="o">|</span>
+  <span class="n">result_set</span> <span class="o">=</span> <span class="no">Exits</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="ss">:start_date</span> <span class="o">=&gt;</span> <span class="n">date</span><span class="p">,</span> 
+                              <span class="ss">:end_date</span> <span class="o">=&gt;</span> <span class="n">date</span><span class="p">,</span> 
+                              <span class="ss">:filters</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:page_path</span><span class="o">.</span><span class="n">eql</span> <span class="o">=&gt;</span> <span class="s1">&#39;/projects/&#39;</span> <span class="o">+</span> <span class="n">project_id</span><span class="o">.</span><span class="n">to_s</span><span class="p">})</span>
+  
+  <span class="n">result_set</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="o">|</span>
+    <span class="c1">#puts date.to_s + &quot;-&gt; &quot; + result.unique_pageviews.to_s</span>
+    <span class="no">Pv</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:ga_date</span> <span class="o">=&gt;</span> <span class="n">date</span><span class="p">,</span> 
+              <span class="ss">:upv</span> <span class="o">=&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">unique_pageviews</span><span class="p">,</span> 
+              <span class="ss">:pv</span> <span class="o">=&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">pageviews</span><span class="p">,</span>
+              <span class="ss">:project_id</span> <span class="o">=&gt;</span> <span class="n">project_id</span><span class="o">.</span><span class="n">to_s</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
